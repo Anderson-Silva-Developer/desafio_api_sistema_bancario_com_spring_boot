@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @GetMapping("/")
     public  String hello(){
-        return  "Bank ok";
+        return  "Bank ok!";
     }
 }
