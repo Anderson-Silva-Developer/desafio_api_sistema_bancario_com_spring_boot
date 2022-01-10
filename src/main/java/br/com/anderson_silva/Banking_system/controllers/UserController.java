@@ -1,19 +1,25 @@
 package br.com.anderson_silva.Banking_system.controllers;
 
+import br.com.anderson_silva.Banking_system.bankTransaction.BankTransaction;
 import br.com.anderson_silva.Banking_system.model.Client;
 import br.com.anderson_silva.Banking_system.model.ClientTransfer;
 import br.com.anderson_silva.Banking_system.model.User;
+import br.com.anderson_silva.Banking_system.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/Bank")
 public class UserController {
+    @Autowired
+    private UserRepository userRepository;
+
     Client c=new Client();
 
     @GetMapping("/")
@@ -27,27 +33,40 @@ public class UserController {
 
         return  c;
     }
-    @GetMapping("/teste")
-    public Client getClient(){
-        return  c;
+    @GetMapping("/list")
+    public List<User> getClient(){
+        return  this.userRepository.findAll();
     }
     @PostMapping("/register")
     public User register(@RequestBody User user){
-        return user;
+        //OBS:verificar todos os campos
+       return this.userRepository.save(user);
+
     }
+
     @PostMapping("/transfer")
     public ResponseEntity<String> transfer(@RequestBody ClientTransfer clientTransfer){
-        LinkedHashMap origin= (LinkedHashMap) clientTransfer.getOrigin();
-        LinkedHashMap destiny= (LinkedHashMap) clientTransfer.getDestiny();
+       try {
+           if(!clientTransfer.getTransfer_amount_destiny().equals("")&&
+                   !clientTransfer.getCpf_cnpj_destiny().equals("")&&
+                   !clientTransfer.getCpf_cnpj_origin().equals("")&&
+                   !clientTransfer.getEmail().equals("")&&
+                   !clientTransfer.getPassword().equals("")
+           ){
 
-        String amount= origin.get("transfer_amount_destiny").toString();
-        BigDecimal v1 = new BigDecimal(amount.replaceAll("\\.", "").replace(",","."));
-        System.out.println(c.getWallet().compareTo(new BigDecimal(v1.toString()))>=1);//compara se o saldo e maior ou igual
-        c.setWallet(v1.add(c.getWallet()));
-        DecimalFormat df = new DecimalFormat("###,##0.00");
-        System.out.println(df.format(c.getWallet()));
+               boolean result=new BankTransaction().transfer(clientTransfer);
 
-        return ResponseEntity.ok(df.format(c.getWallet()));
+
+           }else{
+               System.out.println("dados não ok");
+           }
+
+       }catch (Exception e){
+           return  ResponseEntity.ok(e.getMessage());
+       }
+
+
+        return  ResponseEntity.ok(c.getWallet().toString());
 
     }
 

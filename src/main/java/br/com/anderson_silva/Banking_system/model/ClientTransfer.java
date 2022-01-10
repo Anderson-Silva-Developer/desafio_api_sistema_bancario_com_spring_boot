@@ -14,6 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientTransfer {
-    private Object origin;
-    private Object destiny;
+    private String email;
+    private String password;
+    private String cpf_cnpj_origin;
+    private String cpf_cnpj_destiny;
+    private String transfer_amount_destiny;
 }
