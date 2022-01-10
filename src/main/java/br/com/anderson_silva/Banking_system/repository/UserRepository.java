@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Transactional
     @Modifying
     @Query("UPDATE User  u set u.wallet=?2 where u.cpf_cnpj =?1")
-    public  void updateBalance(@Param("cpf_cnpf")  String cpf_cnpf,@Param("wallet") BigDecimal wallet);
+    public  int updateBalance(@Param("cpf_cnpf")  String cpf_cnpf,@Param("wallet") BigDecimal wallet);
 
 
 

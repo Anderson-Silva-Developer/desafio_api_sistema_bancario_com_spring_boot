@@ -55,10 +55,11 @@ public class UserController {
            ){
 
                boolean result=new BankTransaction().transfer(clientTransfer);
+               return  result?ResponseEntity.ok("Transferência concluída !!"):ResponseEntity.ok("Transferência cancelada !!");
 
 
            }else{
-               System.out.println("dados não ok");
+               ResponseEntity.ok("Dados inconsistentes!!");
            }
 
        }catch (Exception e){
@@ -66,7 +67,7 @@ public class UserController {
        }
 
 
-        return  ResponseEntity.ok(c.getWallet().toString());
+        return  ResponseEntity.ok("Transferência cancelada !!");
 
     }
 

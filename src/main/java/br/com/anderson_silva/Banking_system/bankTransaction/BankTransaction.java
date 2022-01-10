@@ -35,22 +35,24 @@ public class BankTransaction {
                     System.out.println("Origin :"+userOrigin.getFull_name());
                     System.out.println("Origin wallet:"+userOrigin.getWallet());
                     System.out.println("Destiny :"+userdestiny.getFull_name());
-                    System.out.println("deposito altorizado!");
+                    System.out.println("authorized deposit!");
                     System.out.println("type user "+userOrigin.getType_user());
                     ///depositar
                     makeDeposit(userOrigin,userdestiny,balance);
 
                 }else{
-                    System.out.println(balance.compareTo(new BigDecimal("0.0"))!=0?"deposito altorizado":"deposito não altorizado!");
+                    System.out.println(balance.compareTo(new BigDecimal("0.0"))!=0?"authorized deposit":"unauthorized deposit!");
                     System.out.println("type user client: "+!userOrigin.getType_user().equals("shopkeeper"));
+                    return false;
                 }
 
 
 
             }else{
-                System.out.println(userOrigin==null?"Origin não encontrado transferencia cancelada":"Origin Encontrado");
-                System.out.println(userdestiny==null?"Destiny não encontrado transferencia cancelada":"Destiny Encontrado");
-                System.out.println("-------------------------------------------------------");
+                System.out.println(userOrigin==null?"Origin not found transfer canceled":"Origin Found");
+                System.out.println(userdestiny==null?"Destiny not found transfer canceled":"Destiny Found");
+
+                return false;
             }
             return true;
 
@@ -62,15 +64,29 @@ public class BankTransaction {
     }
 
     private void makeDeposit(User userOrigin,User userDestiny,BigDecimal amount){
-        System.out.println("DE: "+userOrigin.getFull_name());
-        System.out.println("PARA: "+userDestiny.getFull_name());
-        System.out.println("AMOUNT:"+amount);
+
+        System.out.println("Origin: "+userOrigin.getFull_name());
+        System.out.println("Destiny: "+userDestiny.getFull_name());
+        System.out.println("Amount:"+amount);
         BigDecimal newAmountDestiny=amount.add(userDestiny.getWallet());
-        myRepo.updateBalance(userDestiny.getCpf_cnpj(),newAmountDestiny);
-        System.out.println("deposito concluido: ");
         BigDecimal newAmountOrigin=userOrigin.getWallet().subtract(amount);
-        myRepo.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin);
-        System.out.println("transferencia concluido: ");
+        int updateOrigin=myRepo.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin);
+        if(updateOrigin!=0){
+            System.out.println("transfer completed: ");
+            int updateDestiny=myRepo.updateBalance(userDestiny.getCpf_cnpj(),newAmountDestiny);
+            if(updateDestiny!=0){
+                System.out.println("deposit completed");
+                ///enviar email de confirmação
+
+            }else{
+                System.out.println("operation failed!");
+                myRepo.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin.add(amount));
+            }
+
+        }else{
+            System.out.println("operation failed!");
+        }
+
 
     }
 }
