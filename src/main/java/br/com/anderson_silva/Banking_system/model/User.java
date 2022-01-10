@@ -13,7 +13,7 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 public class User {
     private  Long id;
-    private BigDecimal wallet=new BigDecimal("1.000").setScale(4, RoundingMode.HALF_EVEN);
+    private BigDecimal wallet=new BigDecimal("1000");
     private  String full_name;
     private  String cpf_cnpj;
     private  String email;
