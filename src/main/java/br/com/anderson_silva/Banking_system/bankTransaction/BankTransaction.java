@@ -6,15 +6,16 @@ import br.com.anderson_silva.Banking_system.notification.SendMail;
 import br.com.anderson_silva.Banking_system.repository.UserRepository;
 import br.com.anderson_silva.Banking_system.util.BeanUtil;
 import br.com.anderson_silva.Banking_system.validator.ValidatorBankTransaction;
-import br.com.anderson_silva.Banking_system.validator.ValidatorUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.Authentication;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -22,13 +23,13 @@ import java.text.DecimalFormat;
 @AllArgsConstructor
 public class BankTransaction {
     private UserRepository repository = BeanUtil.getBean(UserRepository.class);
-    private ValidatorUser validatorUser=new ValidatorUser();
     private ValidatorBankTransaction validatorBankTransaction=new ValidatorBankTransaction();
 
-    public boolean transfer(ClientTransfer clientTransfer){
+    public boolean transfer(ClientTransfer clientTransfer, Authentication auth ){
         try {
-            User userOrigin= this.validatorUser.validate_user(clientTransfer.getCpf_cnpj_origin(),clientTransfer.getPassword());
-            User userdestiny= this.validatorUser.validate_user(clientTransfer.getCpf_cnpj_destiny(),"");
+            Optional<User> optUsuario=this.repository.findByEmail(auth.getName());
+            User userOrigin=optUsuario.get();
+            User userdestiny=this.repository.findUser(clientTransfer.getCpf_cnpj_destiny());
 
             if(userOrigin!=null && userdestiny!=null && !userOrigin.getType_user().equals("shopkeeper")){
 

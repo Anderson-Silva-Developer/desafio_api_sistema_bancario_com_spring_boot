@@ -8,18 +8,14 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
 
     public Optional<User> findByEmail(String email);
 
-    @Query("SELECT u from User u where u.cpf_cnpj =?1 and u.password=?2")
-    public User findUserOrigin(@Param("cpf_cnpf")  String cpf_cnpf,@Param("password")  String password);
-
     @Query("SELECT u from User u where u.cpf_cnpj =?1")
-    public User findUserDestiny(@Param("cpf_cnpf")  String cpf_cnpf);
+    public User findUser(@Param("cpf_cnpf")  String cpf_cnpf);
 
     @Transactional
     @Modifying

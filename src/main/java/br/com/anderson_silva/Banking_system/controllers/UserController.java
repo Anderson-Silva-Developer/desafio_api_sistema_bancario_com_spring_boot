@@ -6,6 +6,8 @@ import br.com.anderson_silva.Banking_system.model.User;
 import br.com.anderson_silva.Banking_system.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,8 +70,14 @@ public class UserController {
     @PostMapping("/transfer")
     public ResponseEntity<String> transfer(@RequestBody ClientTransfer clientTransfer){
        try {
-               boolean result=new BankTransaction().transfer(clientTransfer);
-               return  result?ResponseEntity.ok("Transferência concluída !!"):ResponseEntity.ok("Transferência cancelada !!");
+           Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+           if(auth.isAuthenticated()){
+                  boolean result=new BankTransaction().transfer(clientTransfer,auth);
+                  return  result?ResponseEntity.ok("Transferência concluída !!"):ResponseEntity.ok("Transferência cancelada !!");
+           }
+           return  ResponseEntity.ok("Transferência não realizada cancelada !!");
+
+
 
        }catch (Exception e){
            return  ResponseEntity.ok("Transferência não realizada cancelada !!");
