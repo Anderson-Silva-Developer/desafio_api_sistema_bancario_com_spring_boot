@@ -2,6 +2,7 @@ package br.com.anderson_silva.Banking_system.bankTransaction;
 
 import br.com.anderson_silva.Banking_system.model.ClientTransfer;
 import br.com.anderson_silva.Banking_system.model.User;
+import br.com.anderson_silva.Banking_system.notification.SendMail;
 import br.com.anderson_silva.Banking_system.repository.UserRepository;
 import br.com.anderson_silva.Banking_system.util.BeanUtil;
 import br.com.anderson_silva.Banking_system.validator.ValidatorBankTransaction;
@@ -11,7 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 @Getter
 @Setter
@@ -63,7 +66,7 @@ public class BankTransaction {
         return false;
     }
 
-    private void makeDeposit(User userOrigin,User userDestiny,BigDecimal amount){
+    private void makeDeposit(User userOrigin,User userDestiny,BigDecimal amount) throws IOException {
 
         System.out.println("Origin: "+userOrigin.getFull_name());
         System.out.println("Destiny: "+userDestiny.getFull_name());
@@ -77,6 +80,10 @@ public class BankTransaction {
             if(updateDestiny!=0){
                 System.out.println("deposit completed");
                 ///enviar email de confirmação
+                DecimalFormat df = new DecimalFormat("###,##0.00");
+
+
+                new SendMail().send(userOrigin.getFull_name(),df.format(amount),userDestiny.getEmail());
 
             }else{
                 System.out.println("operation failed!");
