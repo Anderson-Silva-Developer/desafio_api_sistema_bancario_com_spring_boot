@@ -36,9 +36,8 @@ public class User {
     @Column(unique = true)
     private  String email;
 
-
     @NotNull(message = "O campo password deve ser preenchido")
-    @Size(min = 8,max = 16)
+    @Size(min = 8)
     private  String password;
 
     @TypeUser

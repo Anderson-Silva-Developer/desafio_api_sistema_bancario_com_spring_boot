@@ -21,7 +21,7 @@ import java.text.DecimalFormat;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BankTransaction {
-    private UserRepository myRepo = BeanUtil.getBean(UserRepository.class);
+    private UserRepository repository = BeanUtil.getBean(UserRepository.class);
     private ValidatorUser validatorUser=new ValidatorUser();
     private ValidatorBankTransaction validatorBankTransaction=new ValidatorBankTransaction();
 
@@ -29,6 +29,7 @@ public class BankTransaction {
         try {
             User userOrigin= this.validatorUser.validate_user(clientTransfer.getCpf_cnpj_origin(),clientTransfer.getPassword());
             User userdestiny= this.validatorUser.validate_user(clientTransfer.getCpf_cnpj_destiny(),"");
+
             if(userOrigin!=null && userdestiny!=null && !userOrigin.getType_user().equals("shopkeeper")){
 
                 BigDecimal balance = this.validatorBankTransaction.validate_balance(userOrigin, clientTransfer);
@@ -73,10 +74,10 @@ public class BankTransaction {
         System.out.println("Amount:"+amount);
         BigDecimal newAmountDestiny=amount.add(userDestiny.getWallet());
         BigDecimal newAmountOrigin=userOrigin.getWallet().subtract(amount);
-        int updateOrigin=myRepo.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin);
+        int updateOrigin= repository.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin);
         if(updateOrigin!=0){
             System.out.println("transfer completed: ");
-            int updateDestiny=myRepo.updateBalance(userDestiny.getCpf_cnpj(),newAmountDestiny);
+            int updateDestiny= repository.updateBalance(userDestiny.getCpf_cnpj(),newAmountDestiny);
             if(updateDestiny!=0){
                 System.out.println("deposit completed");
                 ///enviar email de confirmação
@@ -87,7 +88,7 @@ public class BankTransaction {
 
             }else{
                 System.out.println("operation failed!");
-                myRepo.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin.add(amount));
+                repository.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin.add(amount));
             }
 
         }else{
