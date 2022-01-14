@@ -1,7 +1,10 @@
 package br.com.anderson_silva.Banking_system.controllers;
 
 import br.com.anderson_silva.Banking_system.bankTransaction.BankTransaction;
+import br.com.anderson_silva.Banking_system.exceptions.EntityNotFoundException;
+import br.com.anderson_silva.Banking_system.exceptions.StandardError;
 import br.com.anderson_silva.Banking_system.model.ClientTransfer;
+import br.com.anderson_silva.Banking_system.model.TransferStatus;
 import br.com.anderson_silva.Banking_system.model.User;
 import br.com.anderson_silva.Banking_system.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -9,11 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/Bank")
@@ -27,64 +31,35 @@ public class UserController {
         this.encoder = encoder;
     }
 
-    @GetMapping("/todos")
-    public  List<User> todos(){
-        List<User> users=this.userRepository.findAll();
-        return users;
-    }
-
-
-    @GetMapping("/valid")
-    public ResponseEntity<Boolean> validUser(@RequestParam String email,@RequestParam String password){
-        try {
-            Optional<User>  optUsuario= this.userRepository.findByEmail(email);
-            if(optUsuario.isEmpty()){
-                return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
-            }
-
-            User user=optUsuario.get();
-            boolean valid=encoder.matches(password,user.getPassword());
-            HttpStatus status =(valid)?HttpStatus.OK:HttpStatus.UNAUTHORIZED;
-            return  ResponseEntity.status(status).body(valid);
-
-        }catch (Exception e){
-            throw e;
-
-        }
-
-
-
-    }
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody @Valid User user){
-        try {
+
             user.setPassword(encoder.encode(user.getPassword()));
-            return  ResponseEntity.ok(userRepository.save(user));
-        }catch (Exception e){
-            throw e;
-        }
+            user.setTransaction_password(encoder.encode(user.getTransaction_password()));
+
+            return  new ResponseEntity<User>(userRepository.save(user),HttpStatus.CREATED);
+
+
 
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<String> transfer(@RequestBody ClientTransfer clientTransfer){
-       try {
+    public ResponseEntity<?> transfer(@RequestBody @Valid ClientTransfer clientTransfer){
            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+           TransferStatus transferStatus=new TransferStatus();
            if(auth.isAuthenticated()){
-                  boolean result=new BankTransaction().transfer(clientTransfer,auth);
-                  return  result?ResponseEntity.ok("Transferência concluída !!"):ResponseEntity.ok("Transferência cancelada !!");
+
+               boolean result=new BankTransaction().transfer(clientTransfer,auth,encoder);
+
+               HttpStatus status =(result)?HttpStatus.OK:HttpStatus.UNAUTHORIZED;
+               transferStatus =result?transferStatus.Accept():transferStatus.Recuse();
+               return  ResponseEntity.status(status).body(transferStatus) ;
            }
-           return  ResponseEntity.ok("Transferência não realizada cancelada !!");
 
-
-
-       }catch (Exception e){
-           return  ResponseEntity.ok("Transferência não realizada cancelada !!");
-       }
-
+        transferStatus=transferStatus.Recuse();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(transferStatus);
 
     }
-
 
 }

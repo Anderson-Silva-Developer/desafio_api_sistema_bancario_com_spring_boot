@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -25,41 +26,23 @@ public class BankTransaction {
     private UserRepository repository = BeanUtil.getBean(UserRepository.class);
     private ValidatorBankTransaction validatorBankTransaction=new ValidatorBankTransaction();
 
-    public boolean transfer(ClientTransfer clientTransfer, Authentication auth ){
+
+    public boolean transfer(ClientTransfer clientTransfer, Authentication auth,final PasswordEncoder encoder){
         try {
             Optional<User> optUsuario=this.repository.findByEmail(auth.getName());
             User userOrigin=optUsuario.get();
-            User userdestiny=this.repository.findUser(clientTransfer.getCpf_cnpj_destiny());
+            User userdestiny=this.repository.findUser(clientTransfer.getCpf_cnpj());
 
-            if(userOrigin!=null && userdestiny!=null && !userOrigin.getType_user().equals("shopkeeper")){
+            boolean isValidTransaction=encoder.matches(clientTransfer.getTransaction_password(),userOrigin.getTransaction_password());
+            System.out.println(isValidTransaction);
+            BigDecimal balance = this.validatorBankTransaction.validateBalance(userOrigin, clientTransfer);
 
-                BigDecimal balance = this.validatorBankTransaction.validate_balance(userOrigin, clientTransfer);
-
-                if(balance.compareTo(new BigDecimal("0.0"))!=0){
-                    System.out.println("transferir amount"+clientTransfer.getTransfer_amount_destiny());
-                    System.out.println("Origin :"+userOrigin.getFull_name());
-                    System.out.println("Origin wallet:"+userOrigin.getWallet());
-                    System.out.println("Destiny :"+userdestiny.getFull_name());
-                    System.out.println("authorized deposit!");
-                    System.out.println("type user "+userOrigin.getType_user());
-                    ///depositar
-                    makeDeposit(userOrigin,userdestiny,balance);
-
-                }else{
-                    System.out.println(balance.compareTo(new BigDecimal("0.0"))!=0?"authorized deposit":"unauthorized deposit!");
-                    System.out.println("type user client: "+!userOrigin.getType_user().equals("shopkeeper"));
-                    return false;
-                }
-
-
-
-            }else{
-                System.out.println(userOrigin==null?"Origin not found transfer canceled":"Origin Found");
-                System.out.println(userdestiny==null?"Destiny not found transfer canceled":"Destiny Found");
-
-                return false;
+            if(userOrigin!=null && userdestiny!=null && !userOrigin.getType_user().equals("shopkeeper")&&
+                    isValidTransaction && (balance.compareTo(new BigDecimal("0.0"))!=0) ){
+                   ///deposit
+                   return makeDeposit(userOrigin,userdestiny,balance);
             }
-            return true;
+            return false;
 
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -68,34 +51,29 @@ public class BankTransaction {
         return false;
     }
 
-    private void makeDeposit(User userOrigin,User userDestiny,BigDecimal amount) throws IOException {
+    private boolean makeDeposit(User userOrigin,User userDestiny,BigDecimal amount) throws IOException {
+        try {
+            BigDecimal newAmountDestiny=amount.add(userDestiny.getWallet());
+            BigDecimal newAmountOrigin=userOrigin.getWallet().subtract(amount);
 
-        System.out.println("Origin: "+userOrigin.getFull_name());
-        System.out.println("Destiny: "+userDestiny.getFull_name());
-        System.out.println("Amount:"+amount);
-        BigDecimal newAmountDestiny=amount.add(userDestiny.getWallet());
-        BigDecimal newAmountOrigin=userOrigin.getWallet().subtract(amount);
-        int updateOrigin= repository.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin);
-        if(updateOrigin!=0){
-            System.out.println("transfer completed: ");
-            int updateDestiny= repository.updateBalance(userDestiny.getCpf_cnpj(),newAmountDestiny);
-            if(updateDestiny!=0){
-                System.out.println("deposit completed");
-                ///enviar email de confirmação
-                DecimalFormat df = new DecimalFormat("###,##0.00");
-
-
-                new SendMail().send(userOrigin.getFull_name(),df.format(amount),userDestiny.getEmail());
-
-            }else{
-                System.out.println("operation failed!");
-                repository.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin.add(amount));
+            int updateOrigin= repository.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin);
+            if(updateOrigin!=0){
+                int updateDestiny= repository.updateBalance(userDestiny.getCpf_cnpj(),newAmountDestiny);
+                if(updateDestiny!=0){
+                    ///enviar email de confirmação
+                    DecimalFormat df = new DecimalFormat("###,##0.00");
+                    new SendMail().send(userOrigin.getFull_name(),df.format(amount),userDestiny.getEmail());
+                    return true;
+                }else{
+                    repository.updateBalance(userOrigin.getCpf_cnpj(),newAmountOrigin.add(amount));
+                }
             }
+            return false;
 
-        }else{
-            System.out.println("operation failed!");
+        }catch (Exception e){
+            throw e;
+
         }
-
 
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
@@ -15,12 +16,12 @@ public interface UserRepository extends JpaRepository<User,Long> {
     public Optional<User> findByEmail(String email);
 
     @Query("SELECT u from User u where u.cpf_cnpj =?1")
-    public User findUser(@Param("cpf_cnpf")  String cpf_cnpf);
+    public User findUser(@Param("cpf_cnpj")  String cpf_cnpj);
 
     @Transactional
     @Modifying
     @Query("UPDATE User  u set u.wallet=?2 where u.cpf_cnpj =?1")
-    public  int updateBalance(@Param("cpf_cnpf")  String cpf_cnpf,@Param("wallet") BigDecimal wallet);
+    public  int updateBalance(@Param("cpf_cnpj")  String cpf_cnpj,@Param("wallet") BigDecimal wallet);
 
 
 
