@@ -40,8 +40,6 @@ public class UserController {
 
             return  new ResponseEntity<User>(userRepository.save(user),HttpStatus.CREATED);
 
-
-
     }
 
     @PostMapping("/transfer")

@@ -13,7 +13,7 @@ public class SendMail {
     public void send(String userFromName,String amount,String email) throws IOException {
         Email from = new Email(System.getenv("SENDER_MAIL"));
         String subject = "Bank\nTransação Bancária de Transferência";
-        Email to = new Email("bank_suporte@aol.com");
+        Email to = new Email(email);
         Content content = new Content("text/plain", " Transfêrencia recebida de :"+userFromName+"\n\n Valor da Transfêrencia: "+amount);
         Mail mail = new Mail(from, subject, to, content);
 
