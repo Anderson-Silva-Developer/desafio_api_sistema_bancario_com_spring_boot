@@ -1,7 +1,7 @@
 package br.com.anderson_silva.Banking_system.security;
 
 import br.com.anderson_silva.Banking_system.data.UserDataDetails;
-import br.com.anderson_silva.Banking_system.model.User;
+import br.com.anderson_silva.Banking_system.entities.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;

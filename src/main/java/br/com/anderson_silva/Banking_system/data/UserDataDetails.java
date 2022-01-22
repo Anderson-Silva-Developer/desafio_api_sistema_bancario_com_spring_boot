@@ -1,6 +1,6 @@
 package br.com.anderson_silva.Banking_system.data;
 
-import br.com.anderson_silva.Banking_system.model.User;
+import br.com.anderson_silva.Banking_system.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

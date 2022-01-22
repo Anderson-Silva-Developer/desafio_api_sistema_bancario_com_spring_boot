@@ -1,8 +1,8 @@
 package br.com.anderson_silva.Banking_system.services;
 
 import br.com.anderson_silva.Banking_system.data.UserDataDetails;
-import br.com.anderson_silva.Banking_system.model.User;
-import br.com.anderson_silva.Banking_system.repository.UserRepository;
+import br.com.anderson_silva.Banking_system.entities.User;
+import br.com.anderson_silva.Banking_system.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

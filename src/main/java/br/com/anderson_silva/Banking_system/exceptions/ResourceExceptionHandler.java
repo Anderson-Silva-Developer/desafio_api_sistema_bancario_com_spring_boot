@@ -19,43 +19,43 @@ import java.time.Instant;
 @ControllerAdvice
 public class ResourceExceptionHandler {
 
-
-    @ExceptionHandler({HttpMessageNotReadableException.class})
-    public ResponseEntity<StandardError> entityBadRequest(HttpMessageNotReadableException e, HttpServletRequest request) {
-       StandardError err=new StandardError();
-        err.setTimestamp(Instant.now());
-        err.setStatus(HttpStatus.BAD_REQUEST.value());
-        err.setError("Bad Request");
-        err.setMessage("Required request body is missing");
-        err.setPath(request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
-
-    }
-
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<StandardError> ArgumentNotValidBadRequest(MethodArgumentNotValidException e, HttpServletRequest request) {
-        StandardError err=new StandardError();
-        err.setTimestamp(Instant.now());
-        err.setStatus(HttpStatus.BAD_REQUEST.value());
-        err.setError("Bad Request");
-        e.getAllErrors().forEach(error -> {
-          err.setMessage(err.getMessage()+" "+error.getDefaultMessage());
-        });
-
-        err.setPath(request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
-
-    }
-    @ExceptionHandler(PSQLException.class)
-    public ResponseEntity<StandardError> NoSuchElement(PSQLException e, HttpServletRequest request) {
-        StandardError err=new StandardError();
-        err.setTimestamp(Instant.now());
-        err.setStatus(HttpStatus.BAD_REQUEST.value());
-        err.setError("Bad Request");
-        err.setMessage(e.getServerErrorMessage().getDetail());
-        err.setPath(request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
-
-    }
+//
+//    @ExceptionHandler({HttpMessageNotReadableException.class})
+//    public ResponseEntity<StandardError> entityBadRequest(HttpMessageNotReadableException e, HttpServletRequest request) {
+//       StandardError err=new StandardError();
+//        err.setTimestamp(Instant.now());
+//        err.setStatus(HttpStatus.BAD_REQUEST.value());
+//        err.setError("Bad Request");
+//        err.setMessage("Required request body is missing");
+//        err.setPath(request.getRequestURI());
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+//
+//    }
+//
+//    @ExceptionHandler({MethodArgumentNotValidException.class})
+//    public ResponseEntity<StandardError> ArgumentNotValidBadRequest(MethodArgumentNotValidException e, HttpServletRequest request) {
+//        StandardError err=new StandardError();
+//        err.setTimestamp(Instant.now());
+//        err.setStatus(HttpStatus.BAD_REQUEST.value());
+//        err.setError("Bad Request");
+//        e.getAllErrors().forEach(error -> {
+//          err.setMessage(err.getMessage()+" "+error.getDefaultMessage());
+//        });
+//
+//        err.setPath(request.getRequestURI());
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+//
+//    }
+//    @ExceptionHandler(PSQLException.class)
+//    public ResponseEntity<StandardError> NoSuchElement(PSQLException e, HttpServletRequest request) {
+//        StandardError err=new StandardError();
+//        err.setTimestamp(Instant.now());
+//        err.setStatus(HttpStatus.BAD_REQUEST.value());
+//        err.setError("Bad Request");
+//        err.setMessage(e.getServerErrorMessage().getDetail());
+//        err.setPath(request.getRequestURI());
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+//
+//    }
 
 }
