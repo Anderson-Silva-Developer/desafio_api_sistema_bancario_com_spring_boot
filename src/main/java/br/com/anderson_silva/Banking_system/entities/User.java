@@ -45,7 +45,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_wallet")
-    private  Wallet wallet;
+    private  Wallet wallet=new Wallet();
 
 }
 

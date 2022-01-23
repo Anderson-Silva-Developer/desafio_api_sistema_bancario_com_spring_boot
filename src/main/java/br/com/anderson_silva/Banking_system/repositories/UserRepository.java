@@ -13,5 +13,12 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Long> {
 
     public Optional<User> findByEmail(String email);
+    public Optional<User> findByCpfCnpj(String  cpfCnpj);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Wallet  u set u.balance=?2 where u.id=?1")
+    public  int updateBalance(@Param("id") Long id,@Param("balance") BigDecimal balance);
+
 
 }
