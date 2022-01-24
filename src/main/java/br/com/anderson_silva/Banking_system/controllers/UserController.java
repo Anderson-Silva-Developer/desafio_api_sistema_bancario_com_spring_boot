@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<TransferResponseTDO> transfer(@RequestBody TransferRequestTDO transferReqTDO){
+    public ResponseEntity<TransferResponseTDO> transfer(@RequestBody @Valid TransferRequestTDO transferReqTDO){
         TransferResponseTDO transferResTDO=new TransferResponseTDO();
         try {
             transferResTDO=this.walletService.transfer(transferReqTDO);

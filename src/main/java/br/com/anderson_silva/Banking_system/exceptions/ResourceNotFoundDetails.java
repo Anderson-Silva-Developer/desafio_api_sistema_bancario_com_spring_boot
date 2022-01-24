@@ -12,9 +12,9 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResourceNotFoundDetails {
-    private String title;
     private int status;
     private String detail;
-    private long timestamp;
-    private String developerMessage;
+    private String field;
+    private String fieldMessage;
+
 }

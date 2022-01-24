@@ -70,7 +70,8 @@ public class WalletService {
     }
 
     public BigDecimal checkBalance(User user, TransferRequestTDO transferRequestTDO){
-        BigDecimal amountBigDecimal = new BigDecimal(transferRequestTDO.getAmountDestiny().replaceAll("\\.", "").replace(",","."));
+//        BigDecimal amountBigDecimal = new BigDecimal(transferRequestTDO.getAmountDestiny().replaceAll("\\.", "").replace(",","."));
+        BigDecimal amountBigDecimal = new BigDecimal(transferRequestTDO.getAmountDestiny());
         boolean result = (user.getWallet().getBalance().compareTo(new BigDecimal(amountBigDecimal.toString())) >= 0);
         return  result?amountBigDecimal:new BigDecimal("0.0");
     }
