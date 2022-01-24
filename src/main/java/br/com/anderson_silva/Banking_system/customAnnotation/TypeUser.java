@@ -15,7 +15,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy ={TypeUserValidator.class})
 public @interface TypeUser {
 
-    String message() default "O campo type_user aceita apenas os valores [client] ou [shopkeeper]";
+    String message() default "O campo typeUser aceita apenas os valores [client] ou [shopkeeper]";
 
     Class<?>[] groups() default {};
 

@@ -17,13 +17,13 @@ import static org.hibernate.validator.constraints.CompositionType.OR;
 @Documented
 @ConstraintComposition(OR)
 @CPF(message = "")
-@CNPJ(message = "campo cpf_cnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou ,cnpj[xxx.xxx.xxx-xx]")
+@CNPJ(message = "campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou ,cnpj[xxx.xxx.xxx-xx]")
 @Target({FIELD, METHOD, PARAMETER, ANNOTATION_TYPE})
 @Retention(RUNTIME)
 @Constraint(validatedBy = {})
 public @interface CpfOrCnpj {
 
-    String message() default "campo cpf_cnpj inválido se pede o formato  ex:cpf[xxx.xxx.xxx-xx] ,cnpj[xxx.xxx.xxx-xx]";
+    String message() default "campo cpfCnpj inválido se pede o formato  ex:cpf[xxx.xxx.xxx-xx] ,cnpj[xxx.xxx.xxx-xx]";
 
     Class<?>[] groups() default {};
 

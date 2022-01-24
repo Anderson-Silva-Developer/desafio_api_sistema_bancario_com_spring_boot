@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/Bank")
 public class UserController {
@@ -26,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRequestDTO userDTO){
+    public ResponseEntity<UserResponseDTO> register(@RequestBody @Valid UserRequestDTO userDTO){
 
             UserResponseDTO userResponseDTO =this.userService.save(userDTO);
             return  ResponseEntity.ok(userResponseDTO);
@@ -42,7 +44,7 @@ public class UserController {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-       return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(transferResTDO);
+       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(transferResTDO);
 
     }
 
