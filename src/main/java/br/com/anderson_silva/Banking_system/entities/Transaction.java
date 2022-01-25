@@ -5,10 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.print.attribute.standard.MediaSize;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Accessors(chain = true)
 @Getter
@@ -23,18 +26,21 @@ public class Transaction {
     @Column(name = "id")
     private  long id;
 
+    @Column(name = "datatime")
+    private Date dateTime;
+
     @Column(name = "amount")
     private BigDecimal amount;
 
     @Column(name = "id_from_wallet")
-    private String idFromWallet;
+    private Long idFromWallet;
 
     @Column(name = "id_to_wallet")
     private  Long  idToWallet;
 
     @Column(name = "type_transaction")
     private  String typeTransaction;
-    //add field date
+
     @ManyToOne
     @JoinColumn(name = "id_wallet")
     private  Wallet wallet;

@@ -7,6 +7,7 @@ import br.com.anderson_silva.Banking_system.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -31,11 +32,22 @@ public class UserService {
     }
 
     public  User findByEmail(String email){
-        return this.userRepository.findByEmail(email).get();
+
+        Optional<User> userOptional = this.userRepository.findByEmail(email);
+        if(userOptional.isPresent()){
+            return this.userRepository.findByEmail(email).get();
+        }
+        return null;
+
     }
 
     public  User findByCpfCnpj(String cpfCnpj){
-        return  this.userRepository.findByCpfCnpj(cpfCnpj).get();
+        Optional<User> userOptional=this.userRepository.findByCpfCnpj(cpfCnpj);
+        if(userOptional.isPresent()){
+            return  this.userRepository.findByCpfCnpj(cpfCnpj).get();
+        }
+        return null;
+
     }
 
     public int updateBalanceUser(Long id ,BigDecimal balance){

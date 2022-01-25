@@ -24,6 +24,7 @@ public class UserRequestDTO {
     @CpfOrCnpj
     private  String cpfCnpj;
 
+    @NotBlank(message = "o campo email não pode ficar em branco ou formato incorreto")
     @Email(message = "o campo email não pode ficar em branco ou formato incorreto")
     private  String email;
     @Size(min = 8,max = 16,message = "o campo password deve ficar entre 8 e 16 caracteres")

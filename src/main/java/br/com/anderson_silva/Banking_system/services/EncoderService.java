@@ -18,7 +18,10 @@ public class EncoderService {
 
     }
     public  Boolean checkPassword(TransferRequestTDO transferRequestTDO, User user){
-        System.out.println(user.getWallet().getPasswordTransaction());
-        return encoder.matches(transferRequestTDO.getTransactionPassword(),user.getWallet().getPasswordTransaction());
+        if(user!=null && !transferRequestTDO.getTransactionPassword().equals("")) {
+            System.out.println(user.getWallet().getPasswordTransaction());
+            return encoder.matches(transferRequestTDO.getTransactionPassword(), user.getWallet().getPasswordTransaction());
+        }
+        return false;
     }
 }

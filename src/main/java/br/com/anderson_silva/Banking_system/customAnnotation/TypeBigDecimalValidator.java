@@ -3,6 +3,7 @@ package br.com.anderson_silva.Banking_system.customAnnotation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 public class TypeBigDecimalValidator implements ConstraintValidator<TypeBigDecimal,String> {
 
@@ -10,7 +11,9 @@ public class TypeBigDecimalValidator implements ConstraintValidator<TypeBigDecim
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         try {
-            new BigDecimal(s);
+
+            BigDecimal amountBigDecimal = new BigDecimal(s.replaceAll("\\.", "").replace(",","."));
+            new BigDecimal(amountBigDecimal.toString());
             return true;
         }catch (Exception e){
             return false;

@@ -6,14 +6,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransferResponseTDO {
+    private  String operation;
     private  String status;
-    private  String fullName;
-    private BigDecimal AmountDestiny;
+    private String detail;
+    private  String cpfCnpjDestiny;
+    private String AmountDestiny;
+
+    public TransferResponseTDO TransferNotFaund(String amount,String cpfCnpj,String detail){
+        this.setOperation("transferência");
+        this.setStatus("Falha");
+        this.setAmountDestiny(amount);
+        this.setCpfCnpjDestiny(cpfCnpj);
+        this.setDetail(detail);
+        return this;
+    }
 }

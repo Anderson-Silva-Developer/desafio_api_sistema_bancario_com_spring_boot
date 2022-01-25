@@ -9,7 +9,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 
 
 @Getter
@@ -21,7 +20,7 @@ public class TransferRequestTDO {
     @Size(min = 8,max = 16,message = "o campo transactionPassword deve ficar entre 8 e 16 caracteres")
     private String transactionPassword;
     @CpfOrCnpj
-    private String cpfCnpj;
+    private String cpfCnpjDestiny;
     @TypeBigDecimal
     private String amountDestiny;
 }
