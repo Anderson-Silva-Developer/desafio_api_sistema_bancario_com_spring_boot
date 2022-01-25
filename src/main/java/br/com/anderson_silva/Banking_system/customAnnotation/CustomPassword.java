@@ -1,8 +1,6 @@
 package br.com.anderson_silva.Banking_system.customAnnotation;
 
 import org.hibernate.validator.constraints.ConstraintComposition;
-import org.hibernate.validator.constraints.br.CNPJ;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -17,17 +15,17 @@ import static org.hibernate.validator.constraints.CompositionType.OR;
 
 @Documented
 @ConstraintComposition(OR)
-@CPF(message = "campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou ,cnpj[xxx.xxx.xxx-xx]")
-@CNPJ(message = "")
 @Target({FIELD, METHOD, PARAMETER, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = {})
-public @interface CpfOrCnpj {
+@Constraint(validatedBy = {TypeCustomPassword.class})
+public @interface CustomPassword {
 
-    String message() default"";
+    String message() default "o campo transactionPassword deve ficar entre 8 e 16 caracteres ";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    String value() default "";
 
 }

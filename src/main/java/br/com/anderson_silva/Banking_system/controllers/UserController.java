@@ -1,17 +1,16 @@
 package br.com.anderson_silva.Banking_system.controllers;
 
-import br.com.anderson_silva.Banking_system.dto.request.TransferRequestTDO;
+import br.com.anderson_silva.Banking_system.dto.request.BalanceRequestDTO;
+import br.com.anderson_silva.Banking_system.dto.request.TransferRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
-import br.com.anderson_silva.Banking_system.dto.response.TransferResponseTDO;
+import br.com.anderson_silva.Banking_system.dto.response.BalanceResponseDTO;
+import br.com.anderson_silva.Banking_system.dto.response.TransferResponseDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
 import br.com.anderson_silva.Banking_system.services.UserService;
 import br.com.anderson_silva.Banking_system.services.WalletService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -36,8 +35,8 @@ public class UserController {
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<TransferResponseTDO> transfer(@RequestBody @Valid TransferRequestTDO transferReqTDO){
-        TransferResponseTDO transferResTDO=new TransferResponseTDO();
+    public ResponseEntity<TransferResponseDTO> transfer(@RequestBody @Valid TransferRequestDTO transferReqTDO){
+        TransferResponseDTO transferResTDO=new TransferResponseDTO();
         try {
             transferResTDO=this.walletService.transfer(transferReqTDO);
             return ResponseEntity.status(HttpStatus.OK).body(transferResTDO);
@@ -46,6 +45,18 @@ public class UserController {
         }
 
        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(transferResTDO);
+
+    }
+    @GetMapping("/balance")
+    public ResponseEntity<BalanceResponseDTO> balance(@RequestBody @Valid BalanceRequestDTO balanceRequestTDO){
+            BalanceResponseDTO balanceResDTO=new BalanceResponseDTO();
+        try {
+            balanceResDTO=this.walletService.getBalance(balanceRequestTDO);
+            return ResponseEntity.status(HttpStatus.OK).body(balanceResDTO);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(balanceResDTO);
 
     }
 

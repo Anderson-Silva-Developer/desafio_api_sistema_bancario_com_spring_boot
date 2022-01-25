@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransferRequestTDO {
+public class TransferRequestDTO {
     @NotBlank(message = "o campo transactionPassword deve ficar entre 8 e 16 caracteres")
     @Size(min = 8,max = 16,message = "o campo transactionPassword deve ficar entre 8 e 16 caracteres")
     private String transactionPassword;

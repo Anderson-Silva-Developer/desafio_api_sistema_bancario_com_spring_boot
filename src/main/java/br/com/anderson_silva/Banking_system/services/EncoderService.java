@@ -1,6 +1,6 @@
 package br.com.anderson_silva.Banking_system.services;
 
-import br.com.anderson_silva.Banking_system.dto.request.TransferRequestTDO;
+import br.com.anderson_silva.Banking_system.dto.request.TransferRequestDTO;
 import br.com.anderson_silva.Banking_system.entities.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,10 @@ public class EncoderService {
         return encoder.encode(password);
 
     }
-    public  Boolean checkPassword(TransferRequestTDO transferRequestTDO, User user){
-        if(user!=null && !transferRequestTDO.getTransactionPassword().equals("")) {
+    public  Boolean checkPassword(String password, User user){
+        if(user!=null && !password.equals("")) {
             System.out.println(user.getWallet().getPasswordTransaction());
-            return encoder.matches(transferRequestTDO.getTransactionPassword(), user.getWallet().getPasswordTransaction());
+            return encoder.matches(password, user.getWallet().getPasswordTransaction());
         }
         return false;
     }

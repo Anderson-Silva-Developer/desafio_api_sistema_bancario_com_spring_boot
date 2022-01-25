@@ -4,6 +4,7 @@ import org.postgresql.util.PSQLException;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,14 +17,16 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RestExceptionHandler {
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException exception){
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> NotReadableException(HttpMessageNotReadableException exception){
     ResourceNotFoundDetails resourceNotFoundDetails=new ResourceNotFoundDetails()
-            .setStatus(HttpStatus.NOT_FOUND.value())
-            .setDetail(exception.getMessage());
-    return new ResponseEntity<>(resourceNotFoundDetails,HttpStatus.NOT_FOUND);
+            .setStatus(HttpStatus.BAD_REQUEST.value())
+            .setDetail("Required request body is missing");
+    return new ResponseEntity<>(resourceNotFoundDetails,HttpStatus.BAD_REQUEST);
 
     }
+
+
     @ExceptionHandler(PSQLException.class)
     public ResponseEntity<?> SQLException(PSQLException exception, HttpServletRequest request){
 
@@ -34,13 +37,13 @@ public class RestExceptionHandler {
 
         String fieldsMessage=exception.getServerErrorMessage().getDetail().replaceAll("Key","o campo");
         fieldsMessage=fieldsMessage.replaceAll("already exists","já existe");
-        ResourceNotFoundDetails resourceNotFoundDetails=new ResourceNotFoundDetails()
+        ValidationErrorDetails validationErrorDetails=new ValidationErrorDetails();
+        validationErrorDetails.setStatus(HttpStatus.BAD_REQUEST.value());
+        validationErrorDetails.setDetail("Field Validation Error");
+        validationErrorDetails.setField(fields);
+        validationErrorDetails.setFieldMessage(fieldsMessage);
 
-                .setStatus(HttpStatus.BAD_REQUEST.value())
-                .setDetail("Field Validation Error")
-                .setField(fields)
-                .setFieldMessage(fieldsMessage);
-        return new ResponseEntity<>(resourceNotFoundDetails,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(validationErrorDetails,HttpStatus.BAD_REQUEST);
 
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)

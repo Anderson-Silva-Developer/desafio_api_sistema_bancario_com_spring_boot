@@ -1,4 +1,5 @@
-package br.com.anderson_silva.Banking_system.exceptions;
+package br.com.anderson_silva.Banking_system.dto.response;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +12,9 @@ import lombok.experimental.Accessors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResourceNotFoundDetails {
-    private int status;
+public class BalanceResponseDTO {
+    private  String operation;
+    private  String status;
     private String detail;
-
+    private String balance;
 }
