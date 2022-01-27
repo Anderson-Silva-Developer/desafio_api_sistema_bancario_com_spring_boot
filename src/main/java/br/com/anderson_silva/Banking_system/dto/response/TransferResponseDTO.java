@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class TransferResponseDTO {
     private  String operation;
-    private  String status;
+    private  int status;
     private String detail;
     private  String cpfCnpjDestiny;
     private String AmountDestiny;

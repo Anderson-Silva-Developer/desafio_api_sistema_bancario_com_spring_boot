@@ -8,6 +8,7 @@ import br.com.anderson_silva.Banking_system.entities.User;
 import br.com.anderson_silva.Banking_system.entities.Wallet;
 import br.com.anderson_silva.Banking_system.repositories.WalletRepository;
 import br.com.anderson_silva.Banking_system.validator.ValidatorTransfer;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,6 @@ public class WalletService {
 
     public TransferResponseDTO transfer(TransferRequestDTO transferReqTDO) throws IOException {
 
-
            try {
 
                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -61,7 +61,7 @@ public class WalletService {
 
                    TransferResponseDTO transferRespTDO = new TransferResponseDTO()
                            .setOperation("transferência")
-                           .setStatus("Sucesso")
+                           .setStatus(200)
                            .setAmountDestiny(transferReqTDO.getAmountDestiny())
                            .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
                            .setDetail("Sucesso");
@@ -76,7 +76,7 @@ public class WalletService {
 
                    return new TransferResponseDTO()
                            .setOperation("transferência")
-                           .setStatus("Falha")
+                           .setStatus(HttpStatus.NOT_FOUND.value())
                            .setAmountDestiny(transferReqTDO.getAmountDestiny())
                            .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
                            .setDetail("transferência não realizada, confira os campos [transactionPassword, cpfCnpjDestiny, amountDestiny");
@@ -85,7 +85,7 @@ public class WalletService {
            }catch (Exception e){
                return new TransferResponseDTO()
                        .setOperation("transferência")
-                       .setStatus("Falha")
+                       .setStatus(HttpStatus.NOT_FOUND.value())
                        .setAmountDestiny(transferReqTDO.getAmountDestiny())
                        .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
                        .setDetail("transferência não realizada, confira os campos [transactionPassword, cpfCnpjDestiny, amountDestiny");
@@ -136,7 +136,7 @@ public class WalletService {
         if(!isPassword){
             return  new BalanceResponseDTO()
                     .setOperation("Consulta de saldo")
-                    .setStatus("Falha")
+                    .setStatus(HttpStatus.BAD_REQUEST.value())
                     .setDetail("usuário ou senha de transação incorreto")
                     .setBalance("não disponivel");
         }
@@ -144,7 +144,7 @@ public class WalletService {
         if(Objects.isNull(userOrigin)){
             return  new BalanceResponseDTO()
                     .setOperation("Consulta de saldo")
-                    .setStatus("Falha")
+                    .setStatus(HttpStatus.NOT_FOUND.value())
                     .setDetail("usuário não encontrado")
                     .setBalance("não disponivel");
         }
@@ -153,7 +153,7 @@ public class WalletService {
         DecimalFormat df = new DecimalFormat("###,##0.00");
         return  new BalanceResponseDTO()
                 .setOperation("Consulta de saldo")
-                .setStatus("Sucesso")
+                .setStatus(200)
                 .setDetail("Saldo")
                 .setBalance(df.format(wallet.getBalance()));
 

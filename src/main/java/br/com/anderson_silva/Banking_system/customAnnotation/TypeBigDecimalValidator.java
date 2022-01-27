@@ -13,8 +13,10 @@ public class TypeBigDecimalValidator implements ConstraintValidator<TypeBigDecim
         try {
 
             BigDecimal amountBigDecimal = new BigDecimal(s.replaceAll("\\.", "").replace(",","."));
-            new BigDecimal(amountBigDecimal.toString());
-            return true;
+            BigDecimal bigDecimal=new BigDecimal(amountBigDecimal.toString());
+            if(bigDecimal.compareTo(new BigDecimal("0.0"))>0)
+                return true;
+            return false;
         }catch (Exception e){
             return false;
         }

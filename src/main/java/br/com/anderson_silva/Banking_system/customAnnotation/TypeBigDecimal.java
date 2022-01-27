@@ -15,7 +15,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Constraint(validatedBy ={TypeBigDecimalValidator.class})
 public @interface TypeBigDecimal {
-    String message() default "O campo amountDestiny com formato inválido  use ex:[1.0],[1.000],[0,10],[1.100,00]";
+    String message() default "O campo amountDestiny com formato inválido  use ex:[1.0],[1.000],[0,10],[1.100,00] e maior que 0";
 
     Class<?>[] groups() default {};
 

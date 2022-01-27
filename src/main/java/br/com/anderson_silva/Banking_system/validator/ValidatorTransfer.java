@@ -4,8 +4,8 @@ package br.com.anderson_silva.Banking_system.validator;
 import br.com.anderson_silva.Banking_system.dto.request.TransferRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.TransferResponseDTO;
 import br.com.anderson_silva.Banking_system.entities.User;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 
 import java.math.BigDecimal;
@@ -19,7 +19,7 @@ public class ValidatorTransfer {
         if(!auth.isAuthenticated()){
             return  new TransferResponseDTO()
                     .setOperation("transferência")
-                    .setStatus("Falha")
+                    .setStatus(HttpStatus.FORBIDDEN.value())
                     .setAmountDestiny(transferReqTDO.getAmountDestiny())
                     .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
                     .setDetail("usuário não autenticado");
@@ -29,7 +29,7 @@ public class ValidatorTransfer {
         if(balance.compareTo(new BigDecimal("0.0"))==0){
             return  new TransferResponseDTO()
                     .setOperation("transferência")
-                    .setStatus("Falha")
+                    .setStatus(HttpStatus.BAD_REQUEST.value())
                     .setAmountDestiny(transferReqTDO.getAmountDestiny())
                     .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
                     .setDetail("saldo insuficiente");
@@ -39,7 +39,7 @@ public class ValidatorTransfer {
         if(!isPassword){
             return  new TransferResponseDTO()
                     .setOperation("transferência")
-                    .setStatus("Falha")
+                    .setStatus(HttpStatus.BAD_REQUEST.value())
                     .setAmountDestiny(transferReqTDO.getAmountDestiny())
                     .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
                     .setDetail("usuário ou senha de transação incorreto");
@@ -49,7 +49,7 @@ public class ValidatorTransfer {
         if(Objects.isNull(userDestiny)){
             return  new TransferResponseDTO()
                     .setOperation("transferência")
-                    .setStatus("Falha")
+                    .setStatus(HttpStatus.NOT_FOUND.value())
                     .setAmountDestiny(transferReqTDO.getAmountDestiny())
                     .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
                     .setDetail("cpfCnpjDestiny não encontrado");
@@ -59,7 +59,7 @@ public class ValidatorTransfer {
         if(Objects.isNull(userOrigin) || userOrigin.getTypeUser().equals("shopkeeper")){
             return  new TransferResponseDTO()
                     .setOperation("transferência")
-                    .setStatus("Falha")
+                    .setStatus(HttpStatus.FORBIDDEN.value())
                     .setAmountDestiny(transferReqTDO.getAmountDestiny())
                     .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
                     .setDetail("usuário não autorizado");
