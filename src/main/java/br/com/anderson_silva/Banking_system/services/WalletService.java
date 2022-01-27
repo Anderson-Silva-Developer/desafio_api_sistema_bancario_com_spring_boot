@@ -7,6 +7,7 @@ import br.com.anderson_silva.Banking_system.dto.response.TransferResponseDTO;
 import br.com.anderson_silva.Banking_system.entities.User;
 import br.com.anderson_silva.Banking_system.entities.Wallet;
 import br.com.anderson_silva.Banking_system.repositories.WalletRepository;
+import br.com.anderson_silva.Banking_system.validator.ValidatorTransfer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 @Service
 public class WalletService {
@@ -22,6 +24,7 @@ public class WalletService {
     private final NotificationService notificationService;
     private final TransactionService transactionService;
     private final WalletRepository walletRepository;
+    private   ValidatorTransfer validatorTransfer=new ValidatorTransfer();
 
     public WalletService(UserService userService, EncoderService encoderService, NotificationService notificationService, TransactionService transactionService, WalletRepository walletRepository) {
         this.userService = userService;
@@ -30,97 +33,69 @@ public class WalletService {
         this.notificationService = notificationService;
         this.transactionService = transactionService;
         this.walletRepository = walletRepository;
+
     }
 
     public TransferResponseDTO transfer(TransferRequestDTO transferReqTDO) throws IOException {
 
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            DecimalFormat df = new DecimalFormat("###,##0.00");
 
-            if(!auth.isAuthenticated()){
-                return  new TransferResponseDTO()
-                        .setOperation("transferência")
-                        .setStatus("Falha")
-                        .setAmountDestiny(transferReqTDO.getAmountDestiny())
-                        .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
-                        .setDetail("usuário não autenticado");
-            }
+           try {
 
-            User userOrigin=this.userService.findByEmail(auth.getName());
-            User userDestiny=this.userService.findByCpfCnpj(transferReqTDO.getCpfCnpjDestiny());
-            boolean isPassword=this.encoderService.checkPassword(transferReqTDO.getTransactionPassword(),userOrigin);
-            BigDecimal balance=this.checkBalance(userOrigin,transferReqTDO);
-            TransferResponseDTO transferResponseTDO = new TransferResponseDTO();
+               Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+               DecimalFormat df = new DecimalFormat("###,##0.00");
+               User userOrigin=this.userService.findByEmail(auth.getName());
+               User userDestiny = this.userService.findByCpfCnpj(transferReqTDO.getCpfCnpjDestiny());
+               boolean isPassword = this.encoderService.checkPassword(transferReqTDO.getTransactionPassword(), userOrigin);
+               BigDecimal balance = this.checkBalance(userOrigin, transferReqTDO);
 
-            if(balance.compareTo(new BigDecimal("0.0"))==0){
-                return  new TransferResponseDTO()
-                .setOperation("transferência")
-                .setStatus("Falha")
-                .setAmountDestiny(transferReqTDO.getAmountDestiny())
-                .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
-                .setDetail("saldo insuficiente");
+               TransferResponseDTO transferResponseTDO = this.validatorTransfer.validatorRequestTransfer(auth, transferReqTDO, userOrigin, userDestiny, isPassword, balance);
 
-            }
-            if(!isPassword){
-                return  new TransferResponseDTO()
-                        .setOperation("transferência")
-                        .setStatus("Falha")
-                        .setAmountDestiny(transferReqTDO.getAmountDestiny())
-                        .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
-                        .setDetail("usuário ou senha de transação incorreto");
+               if (!Objects.isNull(transferResponseTDO)) {
+                   return transferResponseTDO;
 
-            }
-            if(userDestiny==null){
-                return  new TransferResponseDTO()
-                        .setOperation("transferência")
-                        .setStatus("Falha")
-                        .setAmountDestiny(transferReqTDO.getAmountDestiny())
-                        .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
-                        .setDetail("cpfCnpjDestiny não encontrado");
-            }
-            if(userOrigin.getTypeUser().equals("shopkeeper")){
-                return  new TransferResponseDTO()
-                        .setOperation("transferência")
-                        .setStatus("Falha")
-                        .setAmountDestiny(transferReqTDO.getAmountDestiny())
-                        .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
-                        .setDetail("usuário não autorizado");
+               }
 
-            }
+               boolean deposit = Deposit(userOrigin, userDestiny, balance);
 
-            boolean deposit=Deposit(userOrigin,userDestiny,balance);
+               if (deposit) {
 
-            if(deposit) {
+                   TransferResponseDTO transferRespTDO = new TransferResponseDTO()
+                           .setOperation("transferência")
+                           .setStatus("Sucesso")
+                           .setAmountDestiny(transferReqTDO.getAmountDestiny())
+                           .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
+                           .setDetail("Sucesso");
 
-               TransferResponseDTO  transferResponseDTO=new TransferResponseDTO()
-                        .setOperation("transferência")
-                        .setStatus("Sucesso")
-                        .setAmountDestiny(transferReqTDO.getAmountDestiny())
-                        .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
-                        .setDetail("Sucesso");
+                   this.transactionService
+                           .walletReport(userOrigin.getWallet().getId(), userDestiny.getWallet().getId(), balance, userOrigin.getWallet(), "transfer");
+                   int code = this.notificationService.sendMail(userOrigin.getFullName(), df.format(balance), userDestiny.getEmail());
 
-                    this.transactionService
-                            .walletReport(userOrigin.getWallet().getId(),userDestiny.getWallet().getId(),balance,userOrigin.getWallet(),"transfer");
-                    int code =this.notificationService.sendMail(userOrigin.getFullName(),df.format(balance),userDestiny.getEmail());
-                    return  transferResponseTDO;
+                   return transferRespTDO;
 
-            }else {
+               } else {
 
-                return  new TransferResponseDTO()
-                        .setOperation("transferência")
-                        .setStatus("Falha")
-                        .setAmountDestiny(transferReqTDO.getAmountDestiny())
-                        .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
-                        .setDetail("transferência não realizada");
+                   return new TransferResponseDTO()
+                           .setOperation("transferência")
+                           .setStatus("Falha")
+                           .setAmountDestiny(transferReqTDO.getAmountDestiny())
+                           .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
+                           .setDetail("transferência não realizada, confira os campos [transactionPassword, cpfCnpjDestiny, amountDestiny");
 
-            }
-
+               }
+           }catch (Exception e){
+               return new TransferResponseDTO()
+                       .setOperation("transferência")
+                       .setStatus("Falha")
+                       .setAmountDestiny(transferReqTDO.getAmountDestiny())
+                       .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
+                       .setDetail("transferência não realizada, confira os campos [transactionPassword, cpfCnpjDestiny, amountDestiny");
+           }
 
     }
 
     public BigDecimal checkBalance(User user, TransferRequestDTO transferRequestTDO){
 
-        if(user!=null && !transferRequestTDO.getAmountDestiny().equals("")) {
+        if(!Objects.isNull(user) && !transferRequestTDO.getAmountDestiny().equals("")) {
             BigDecimal amountBigDecimal = new BigDecimal(transferRequestTDO.getAmountDestiny().replaceAll("\\.", "").replace(",", "."));
             boolean result = (user.getWallet().getBalance().compareTo(new BigDecimal(amountBigDecimal.toString())) >= 0);
             return result ? amountBigDecimal : new BigDecimal("0.0");
@@ -141,7 +116,7 @@ public class WalletService {
                 if(updateDestiny!=0){
                     return true;
                 }else{
-                    updateOrigin=this.userService.updateBalanceUser(userOrigin.getWallet().getId(),newAmountOrigin.add(amount));
+                    this.userService.updateBalanceUser(userOrigin.getWallet().getId(),newAmountOrigin.add(amount));
 
                 }
             }
@@ -154,7 +129,7 @@ public class WalletService {
         return false;
     }
 
-    public BalanceResponseDTO getBalance(BalanceRequestDTO balanceReqDTO){
+    public BalanceResponseDTO getBalance(BalanceRequestDTO balanceReqDTO) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userOrigin=this.userService.findByEmail(auth.getName());
         boolean isPassword=this.encoderService.checkPassword(balanceReqDTO.getTransactionPassword(),userOrigin);
@@ -166,7 +141,7 @@ public class WalletService {
                     .setBalance("não disponivel");
         }
 
-        if(userOrigin==null){
+        if(Objects.isNull(userOrigin)){
             return  new BalanceResponseDTO()
                     .setOperation("Consulta de saldo")
                     .setStatus("Falha")

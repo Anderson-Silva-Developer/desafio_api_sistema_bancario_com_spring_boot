@@ -18,5 +18,7 @@ public class TransferResponseDTO {
     private String detail;
     private  String cpfCnpjDestiny;
     private String AmountDestiny;
+ 
+
 
 }

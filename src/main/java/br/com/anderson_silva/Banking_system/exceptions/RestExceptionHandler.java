@@ -1,7 +1,7 @@
 package br.com.anderson_silva.Banking_system.exceptions;
 
 import org.postgresql.util.PSQLException;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,12 +11,23 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
-import java.util.*;
+import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RestExceptionHandler {
+
+    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
+    public ResponseEntity<?> NotFoundException( ChangeSetPersister.NotFoundException exception){
+        ResourceNotFoundDetails resourceNotFoundDetails=new ResourceNotFoundDetails()
+                .setStatus(HttpStatus.NOT_FOUND.value())
+                .setDetail("Not Found");
+        return new ResponseEntity<>(resourceNotFoundDetails,HttpStatus.NOT_FOUND);
+
+    }
+
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> NotReadableException(HttpMessageNotReadableException exception){
     ResourceNotFoundDetails resourceNotFoundDetails=new ResourceNotFoundDetails()

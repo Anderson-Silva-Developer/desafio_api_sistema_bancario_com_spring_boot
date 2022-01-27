@@ -5,6 +5,8 @@ import br.com.anderson_silva.Banking_system.entities.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class EncoderService {
     private final PasswordEncoder encoder;
@@ -18,8 +20,7 @@ public class EncoderService {
 
     }
     public  Boolean checkPassword(String password, User user){
-        if(user!=null && !password.equals("")) {
-            System.out.println(user.getWallet().getPasswordTransaction());
+        if(!Objects.isNull(user) && !password.equals("")) {
             return encoder.matches(password, user.getWallet().getPasswordTransaction());
         }
         return false;

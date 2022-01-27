@@ -11,6 +11,7 @@ import java.io.IOException;
 public class SendMail {
 
     public void send(String userFromName,String amount,String email) throws IOException {
+        
         Email from = new Email(System.getenv("SENDER_MAIL"));
         String subject = "Bank\nTransação Bancária de Transferência";
         Email to = new Email(email);
@@ -25,8 +26,6 @@ public class SendMail {
             request.setBody(mail.build());
             Response response = sg.api(request);
             System.out.println(response.getStatusCode());
-            System.out.println(response.getBody());
-            System.out.println(response.getHeaders());
         } catch (IOException ex) {
             throw ex;
         }
