@@ -38,7 +38,7 @@ public class UserService {
 
         Optional<User> userOptional = this.userRepository.findByEmail(email);
         if(userOptional.isPresent()){
-            return this.userRepository.findByEmail(email).get();
+            return userOptional.get();
         }
         throw new Exception();
 
@@ -48,7 +48,7 @@ public class UserService {
     public  User findByCpfCnpj(String cpfCnpj) throws Exception {
         Optional<User> userOptional=this.userRepository.findByCpfCnpj(cpfCnpj);
         if(userOptional.isPresent()){
-            return  this.userRepository.findByCpfCnpj(cpfCnpj).get();
+            return  userOptional.get();
         }
         throw new Exception();
 
