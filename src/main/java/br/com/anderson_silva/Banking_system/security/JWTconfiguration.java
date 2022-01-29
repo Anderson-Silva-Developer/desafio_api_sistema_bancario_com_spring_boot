@@ -32,7 +32,6 @@ public class JWTconfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-
         http.csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login","/Bank/register").permitAll()
                 .anyRequest().authenticated()

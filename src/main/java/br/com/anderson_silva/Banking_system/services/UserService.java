@@ -37,6 +37,7 @@ public class UserService {
     public  User findByEmail(String email) throws Exception {
 
         Optional<User> userOptional = this.userRepository.findByEmail(email);
+        System.out.println(userOptional);
         if(userOptional.isPresent()){
             return userOptional.get();
         }
