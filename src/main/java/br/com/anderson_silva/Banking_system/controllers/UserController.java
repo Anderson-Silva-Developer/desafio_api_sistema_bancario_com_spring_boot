@@ -37,10 +37,9 @@ public class UserController {
 
     @PostMapping("/transfer")
     public ResponseEntity<TransferResponseDTO> transfer(@RequestBody @Valid TransferRequestDTO transferReqTDO) throws IOException {
-        TransferResponseDTO transferResTDO=new TransferResponseDTO();
 
-            transferResTDO=this.walletService.transfer(transferReqTDO);
-            return ResponseEntity.status(transferResTDO.getStatus()).body(transferResTDO);
+        TransferResponseDTO transferRespDTO=this.walletService.transfer(transferReqTDO);
+        return ResponseEntity.status(transferRespDTO.getStatus()).body(transferRespDTO);
 
     }
     @GetMapping("/balance")
