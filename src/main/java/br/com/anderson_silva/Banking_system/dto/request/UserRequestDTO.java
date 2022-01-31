@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Accessors(chain = true)
 @Getter
@@ -23,7 +24,7 @@ public class UserRequestDTO {
 
     @NotBlank(message = "o campo fullName não pode ficar em branco")
     private  String fullName;
-    @NotBlank(message = "o campo cpfCnpj não deve ficar em branco")
+    @NotNull(message = "campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou cnpj[xxx.xxx.xxx-xx]")
     @CpfOrCnpj
     private  String cpfCnpj;
     @NotBlank(message = "o campo email não pode ficar em branco ou formato incorreto")
