@@ -1,19 +1,22 @@
 package br.com.anderson_silva.Banking_system.controllers;
 
+import br.com.anderson_silva.Banking_system.controllers.util.EndpointUtilTest;
 import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class EndpoindRegister extends UserControllerTest{
+public class EndpoindRegister extends UserControllerTest {
+    String errorFullName="o campo fullName não pode ficar em branco";
+    String errorEmail="o campo email não pode ficar em branco ou formato incorreto";
+    String errorCpfCnpj="campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou cnpj[xxx.xxx.xxx-xx]";
+    String errorTypeUser="O campo typeUser aceita apenas os valores [client] ou [shopkeeper]";
+    String errorPassword="o campo password deve ficar entre 8 e 16 caracteres";
 
 
     @Test
@@ -29,11 +32,8 @@ public class EndpoindRegister extends UserControllerTest{
         userResponseDTO.setId(1L);
 
         Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(200));
+
+        new EndpointUtilTest().expected_success200_post(mockMvc, "/Bank/register", userReqDTO);
 
         UserResponseDTO userResp= this.userService.save(userReqDTO);
         assertEquals(userResp.getId(),1L);
@@ -41,7 +41,6 @@ public class EndpoindRegister extends UserControllerTest{
     }
     @Test
     public void expected_failure_empty_field_fullName_register() throws Exception {
-
         UserRequestDTO userReqDTO=new UserRequestDTO();
         userReqDTO
                 .setFullName("")
@@ -49,19 +48,9 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
 
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "o campo fullName não pode ficar em branco"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorFullName));
 
     }
     @Test
@@ -74,19 +63,9 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
 
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "o campo fullName não pode ficar em branco"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error,errorFullName));
 
     }
 
@@ -99,19 +78,9 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
 
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "o campo email não pode ficar em branco ou formato incorreto"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error,errorEmail));
 
     }
     @Test
@@ -123,19 +92,8 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
-
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "o campo email não pode ficar em branco ou formato incorreto"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorEmail));
 
     }
     @Test
@@ -147,19 +105,8 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
-
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "o campo email não pode ficar em branco ou formato incorreto"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorEmail));
 
     }
     @Test
@@ -171,19 +118,9 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
 
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou cnpj[xxx.xxx.xxx-xx]"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorCpfCnpj));
 
     }
     @Test
@@ -194,19 +131,9 @@ public class EndpoindRegister extends UserControllerTest{
                 .setEmail("emailteste@gmail.com")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
 
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou cnpj[xxx.xxx.xxx-xx]"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorCpfCnpj));
 
     }
     @Test
@@ -218,19 +145,9 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("886-55656-56-565-6")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
 
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou cnpj[xxx.xxx.xxx-xx]"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorCpfCnpj));
 
     }
 
@@ -243,19 +160,9 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
 
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "O campo typeUser aceita apenas os valores [client] ou [shopkeeper]"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorTypeUser));
 
     }
 
@@ -269,19 +176,9 @@ public class EndpoindRegister extends UserControllerTest{
                 .setEmail("emailteste@gmail.com")
                 .setCpfCnpj("957.051.460-43")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
 
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "O campo typeUser aceita apenas os valores [client] ou [shopkeeper]"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorTypeUser));
 
     }
     @Test
@@ -293,19 +190,9 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("smdsmdsm")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
 
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "O campo typeUser aceita apenas os valores [client] ou [shopkeeper]"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorTypeUser));
 
     }
 
@@ -318,19 +205,9 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
 
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "o campo password deve ficar entre 8 e 16 caracteres"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorPassword));
 
     }
     @Test
@@ -341,20 +218,8 @@ public class EndpoindRegister extends UserControllerTest{
                 .setEmail("emailteste@gmail.com")
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client");
-
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
-
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "o campo password deve ficar entre 8 e 16 caracteres"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorPassword));
 
     }
     @Test
@@ -366,19 +231,8 @@ public class EndpoindRegister extends UserControllerTest{
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("fdf");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
-
-        Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
-        String error=this.mockMvc.perform(post("/Bank/register")
-                        .contentType("application/json")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(userReqDTO)))
-                .andExpect(status().is(400))
-                .andReturn().getResolvedException().getMessage();
-
-        this.userService.save(userReqDTO);
-        assertTrue(StringUtils.contains(error, "o campo password deve ficar entre 8 e 16 caracteres"));
+        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,"/Bank/register",userReqDTO);
+        assertTrue(StringUtils.contains(error, errorPassword));
 
     }
 }

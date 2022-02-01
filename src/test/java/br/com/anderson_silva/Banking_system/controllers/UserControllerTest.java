@@ -1,6 +1,7 @@
 package br.com.anderson_silva.Banking_system.controllers;
 
 
+import br.com.anderson_silva.Banking_system.controllers.UserController;
 import br.com.anderson_silva.Banking_system.services.ServiceUserDetailsImpl;
 import br.com.anderson_silva.Banking_system.services.UserService;
 import br.com.anderson_silva.Banking_system.services.WalletService;
@@ -13,20 +14,19 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 @WebMvcTest(controllers = UserController.class)
+public
 class UserControllerTest {
 
     @MockBean
-    UserService userService;
+    protected  UserService userService;
     @MockBean
-    WalletService walletService;
+    protected WalletService walletService;
     @MockBean
-     private ServiceUserDetailsImpl serviceUserDetails;
-
+    protected ServiceUserDetailsImpl serviceUserDetails;
     @Autowired
-    MockMvc mockMvc;
-
+    protected MockMvc mockMvc;
     @Autowired
-    ObjectMapper objectMapper;
+    protected ObjectMapper objectMapper;
 
 
 
