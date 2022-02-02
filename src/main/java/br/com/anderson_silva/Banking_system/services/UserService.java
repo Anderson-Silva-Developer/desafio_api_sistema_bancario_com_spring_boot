@@ -3,15 +3,11 @@ package br.com.anderson_silva.Banking_system.services;
 import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
 import br.com.anderson_silva.Banking_system.entities.User;
-import br.com.anderson_silva.Banking_system.exceptions.RestExceptionHandler;
 import br.com.anderson_silva.Banking_system.repositories.UserRepository;
-import net.bytebuddy.asm.Advice;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class UserService {
