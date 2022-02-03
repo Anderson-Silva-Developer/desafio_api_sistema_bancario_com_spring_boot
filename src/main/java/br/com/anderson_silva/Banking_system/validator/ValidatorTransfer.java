@@ -13,8 +13,20 @@ import java.util.Objects;
 
 @NoArgsConstructor
 public class ValidatorTransfer {
-
+    //verifications
     public TransferResponseDTO validatorRequestTransfer(Authentication auth, TransferRequestDTO transferReqTDO, User userOrigin, User userDestiny, boolean isPassword, BigDecimal balance){
+
+        //test
+        if(!Objects.isNull(userOrigin) && !Objects.isNull(userOrigin) && userOrigin==userDestiny){
+            return  new TransferResponseDTO()
+                    .setOperation("transferência")
+                    .setStatus(HttpStatus.FORBIDDEN.value())
+                    .setAmountDestiny(transferReqTDO.getAmountDestiny())
+                    .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
+                    .setDetail("usuário destino não pode ser igual ao de origem");
+
+        }
+
 
         if(!auth.isAuthenticated()){
             return  new TransferResponseDTO()
