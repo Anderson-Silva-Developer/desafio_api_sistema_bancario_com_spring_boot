@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @NoArgsConstructor
 public class ValidatorTransfer {
-
+    //verifications
     public TransferResponseDTO validatorRequestTransfer(Authentication auth, TransferRequestDTO transferReqTDO, User userOrigin, User userDestiny, boolean isPassword, BigDecimal balance){
 
         if(!auth.isAuthenticated()){
