@@ -8,6 +8,7 @@ import br.com.anderson_silva.Banking_system.dto.response.TransferResponseDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
 import br.com.anderson_silva.Banking_system.services.UserService;
 import br.com.anderson_silva.Banking_system.services.WalletService;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,15 @@ public class UserController {
             return  ResponseEntity.ok(userResponseDTO);
 
     }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<UserResponseDTO> update(@RequestBody @Valid UserRequestDTO userDTO, @PathVariable("id") Long id){
+        System.out.println(id);
+        UserResponseDTO userResponseDTO =this.userService.update(userDTO,id);
+        return  ResponseEntity.ok(userResponseDTO);
+
+    }
+
+
 
     @PostMapping("/transfer")
     public ResponseEntity<TransferResponseDTO> transfer(@RequestBody @Valid TransferRequestDTO transferReqTDO) throws IOException {

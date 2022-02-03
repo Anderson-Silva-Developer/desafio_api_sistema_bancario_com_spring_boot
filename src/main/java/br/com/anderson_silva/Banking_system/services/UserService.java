@@ -3,15 +3,13 @@ package br.com.anderson_silva.Banking_system.services;
 import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
 import br.com.anderson_silva.Banking_system.entities.User;
-import br.com.anderson_silva.Banking_system.exceptions.RestExceptionHandler;
 import br.com.anderson_silva.Banking_system.repositories.UserRepository;
-import net.bytebuddy.asm.Advice;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import com.fasterxml.jackson.databind.util.BeanUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class UserService {
@@ -33,6 +31,22 @@ public class UserService {
         return userResponseDTO;
 
     }
+    public UserResponseDTO update(UserRequestDTO userDTO,Long id){
+
+        User user=userDTO.buildUser();
+        user.setPassword(encoderService.encoder(user.getPassword()));
+        user.getWallet().setPasswordTransaction(encoderService.encoder(userDTO.getPassword()));
+        UserResponseDTO userResponseDTO=new UserResponseDTO();
+        Optional<User> userOptional=this.userRepository.findById(id);
+        if(userOptional.isPresent()){
+            BeanUtils.copyProperties(user,userOptional.get(),"id","wallet");
+            userResponseDTO.setId(userRepository.save(userOptional.get()).getId());
+        }
+//
+        return userResponseDTO;
+
+    }
+
 
     public  User findByEmail(String email) throws Exception {
 
