@@ -48,6 +48,7 @@ public class WalletService {
                boolean isPassword = this.encoderService.checkPassword(transferReqTDO.getTransactionPassword(), userOrigin);
                BigDecimal balance = this.checkBalance(userOrigin, transferReqTDO);
 
+
                TransferResponseDTO transferResponseTDO = this.validatorTransfer.validatorRequestTransfer(auth, transferReqTDO, userOrigin, userDestiny, isPassword, balance);
 
                if (!Objects.isNull(transferResponseTDO)) {
@@ -83,6 +84,7 @@ public class WalletService {
 
                }
            }catch (Exception e){
+               System.out.println(e.getMessage());
                return new TransferResponseDTO()
                        .setOperation("transferência")
                        .setStatus(HttpStatus.NOT_FOUND.value())
@@ -104,29 +106,25 @@ public class WalletService {
 
     }
 
-    public boolean Deposit(User userOrigin,User userDestiny,BigDecimal amount) throws IOException {
-        try {
+    public boolean Deposit(User userOrigin,User userDestiny,BigDecimal amount) throws Exception {
+
+
 
             BigDecimal newAmountOrigin=userOrigin.getWallet().getBalance().subtract(amount);
             BigDecimal newAmountDestiny=userDestiny.getWallet().getBalance().add(amount);
 
-            int updateOrigin=this.userService.updateBalanceUser(userOrigin.getWallet().getId(),newAmountOrigin);
-            if(updateOrigin!=0){
-                int updateDestiny=this.userService.updateBalanceUser(userDestiny.getWallet().getId(),newAmountDestiny);
-                if(updateDestiny!=0){
-                    return true;
-                }else{
-                    this.userService.updateBalanceUser(userOrigin.getWallet().getId(),newAmountOrigin.add(amount));
+            boolean updateOrigin=this.userService.updateBalanceUser(userOrigin.getWallet(),newAmountOrigin);
+            boolean updateDestiny=this.userService.updateBalanceUser(userDestiny.getWallet(),newAmountDestiny);
 
-                }
+            if(updateOrigin && updateDestiny) {
+                return true;
             }
+            if(!updateOrigin ||!updateDestiny){
+                this.userService.updateBalanceUser(userOrigin.getWallet(),newAmountOrigin.add(amount));
+                this.userService.updateBalanceUser(userDestiny.getWallet(),newAmountDestiny.subtract(amount));
+            }
+            return false;
 
-        }catch (Exception e){
-            throw e;
-
-        }
-
-        return false;
     }
 
     public BalanceResponseDTO getBalance(BalanceRequestDTO balanceReqDTO) throws Exception {

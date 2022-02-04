@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserResponseDTO {
     private Long id;
+    private int status;
 }

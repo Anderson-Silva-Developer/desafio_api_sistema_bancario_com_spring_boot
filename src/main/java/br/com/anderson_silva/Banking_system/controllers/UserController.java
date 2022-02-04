@@ -31,18 +31,16 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> register(@RequestBody @Valid UserRequestDTO userDTO){
 
             UserResponseDTO userResponseDTO =this.userService.save(userDTO);
-            return  ResponseEntity.ok(userResponseDTO);
+            return  ResponseEntity.status(userResponseDTO.getStatus()).body(userResponseDTO);
 
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserResponseDTO> update(@RequestBody @Valid UserRequestDTO userDTO, @PathVariable("id") Long id){
-        System.out.println(id);
+    public ResponseEntity<UserResponseDTO> update(@RequestBody @Valid UserRequestDTO userDTO, @PathVariable("id") Long id) throws Exception {
+
         UserResponseDTO userResponseDTO =this.userService.update(userDTO,id);
-        return  ResponseEntity.ok(userResponseDTO);
+        return  ResponseEntity.status(userResponseDTO.getStatus()).body(userResponseDTO);
 
     }
-
-
 
     @PostMapping("/transfer")
     public ResponseEntity<TransferResponseDTO> transfer(@RequestBody @Valid TransferRequestDTO transferReqTDO) throws IOException {
