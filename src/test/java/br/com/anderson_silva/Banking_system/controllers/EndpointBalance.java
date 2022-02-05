@@ -29,16 +29,15 @@ public class EndpointBalance extends UserControllerTest {
 
         BalanceResponseDTO balanceRespDTO=  new BalanceResponseDTO()
                 .setOperation("Consulta de saldo")
-                .setStatus(200)
                 .setDetail("Saldo")
                 .setBalance(df.format(new BigDecimal("1000")));
 
 
-        Mockito.when(this.walletService.getBalance(any())).thenReturn(balanceRespDTO);
+        Mockito.when(this.walletService.getBalance(any(),any())).thenReturn(balanceRespDTO);
         new EndpointUtilTest().expected_success200_get(mockMvc, "/Bank/balance", balanceReqDTO);
 
-        BalanceResponseDTO balanceResponseDTO= this.walletService.getBalance(balanceReqDTO);
-        assertEquals(balanceResponseDTO.getStatus(),200);
+        BalanceResponseDTO balanceResponseDTO= this.walletService.getBalance(balanceReqDTO,1L);
+//        assertEquals(balanceResponseDTO.getStatus(),200);
 
 
     }

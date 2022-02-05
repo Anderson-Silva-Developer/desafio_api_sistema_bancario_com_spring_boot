@@ -33,7 +33,7 @@ public class JWTconfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/login","/Bank/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/login","/Bank/clients").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTauthenticateFilter(authenticationManager()))

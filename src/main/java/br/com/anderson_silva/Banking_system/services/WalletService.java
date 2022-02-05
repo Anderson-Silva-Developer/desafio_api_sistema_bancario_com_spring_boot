@@ -6,6 +6,7 @@ import br.com.anderson_silva.Banking_system.dto.response.BalanceResponseDTO;
 import br.com.anderson_silva.Banking_system.dto.response.TransferResponseDTO;
 import br.com.anderson_silva.Banking_system.entities.User;
 import br.com.anderson_silva.Banking_system.entities.Wallet;
+import br.com.anderson_silva.Banking_system.exceptions.StatusNotFoundException;
 import br.com.anderson_silva.Banking_system.repositories.WalletRepository;
 import br.com.anderson_silva.Banking_system.validator.ValidatorTransfer;
 import org.springframework.http.HttpStatus;
@@ -73,18 +74,18 @@ public class WalletService {
 
                    return transferRespTDO;
 
-               } else {
+               }
 
-                   return new TransferResponseDTO()
+               return new TransferResponseDTO()
                            .setOperation("transferência")
                            .setStatus(HttpStatus.NOT_FOUND.value())
                            .setAmountDestiny(transferReqTDO.getAmountDestiny())
                            .setCpfCnpjDestiny(transferReqTDO.getCpfCnpjDestiny())
                            .setDetail("transferência não realizada, confira os campos [transactionPassword, cpfCnpjDestiny, amountDestiny");
 
-               }
+
            }catch (Exception e){
-               System.out.println(e.getMessage());
+
                return new TransferResponseDTO()
                        .setOperation("transferência")
                        .setStatus(HttpStatus.NOT_FOUND.value())
@@ -97,7 +98,7 @@ public class WalletService {
 
     public BigDecimal checkBalance(User user, TransferRequestDTO transferRequestTDO){
 
-        if(!Objects.isNull(user) && !transferRequestTDO.getAmountDestiny().equals("")) {
+        if(Objects.nonNull(user) && !transferRequestTDO.getAmountDestiny().equals("")) {
             BigDecimal amountBigDecimal = new BigDecimal(transferRequestTDO.getAmountDestiny().replaceAll("\\.", "").replace(",", "."));
             boolean result = (user.getWallet().getBalance().compareTo(new BigDecimal(amountBigDecimal.toString())) >= 0);
             return result ? amountBigDecimal : new BigDecimal("0.0");
@@ -127,31 +128,21 @@ public class WalletService {
 
     }
 
-    public BalanceResponseDTO getBalance(BalanceRequestDTO balanceReqDTO) throws Exception {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User userOrigin=this.userService.findByEmail(auth.getName());
+    public BalanceResponseDTO getBalance(BalanceRequestDTO balanceReqDTO,Long id){
+
+        User userOrigin=this.userService.findById(id);
         boolean isPassword=this.encoderService.checkPassword(balanceReqDTO.getTransactionPassword(),userOrigin);
+
         if(!isPassword){
-            return  new BalanceResponseDTO()
-                    .setOperation("Consulta de saldo")
-                    .setStatus(HttpStatus.BAD_REQUEST.value())
-                    .setDetail("usuário ou senha de transação incorreto")
-                    .setBalance("não disponivel");
+            throw new  StatusNotFoundException("usuário ou senha de transação incorreto");
         }
 
-        if(Objects.isNull(userOrigin)){
-            return  new BalanceResponseDTO()
-                    .setOperation("Consulta de saldo")
-                    .setStatus(HttpStatus.NOT_FOUND.value())
-                    .setDetail("usuário não encontrado")
-                    .setBalance("não disponivel");
-        }
-        Wallet wallet=this.walletRepository.findById(userOrigin.getWallet().getId()).get();
+        Wallet wallet=this.walletRepository.findById(userOrigin.getWallet().getId())
+                .orElseThrow(()-> new StatusNotFoundException("wallet not found"));
 
         DecimalFormat df = new DecimalFormat("###,##0.00");
         return  new BalanceResponseDTO()
                 .setOperation("Consulta de saldo")
-                .setStatus(200)
                 .setDetail("Saldo")
                 .setBalance(df.format(wallet.getBalance()));
 

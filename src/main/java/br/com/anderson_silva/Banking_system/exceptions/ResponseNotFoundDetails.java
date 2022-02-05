@@ -11,8 +11,10 @@ import lombok.experimental.Accessors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResourceNotFoundDetails {
-    private int status;
-    private String detail;
+public class ResponseNotFoundDetails{
+    private  Integer status;
+    private  String error;
+    private  String message;
+    private  String path;
 
 }

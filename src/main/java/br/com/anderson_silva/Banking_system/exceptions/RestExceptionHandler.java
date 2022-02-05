@@ -1,7 +1,6 @@
 package br.com.anderson_silva.Banking_system.exceptions;
 
 import org.postgresql.util.PSQLException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,31 +10,46 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
-    public ResponseEntity<?> NotFoundException( ChangeSetPersister.NotFoundException exception){
-        ResourceNotFoundDetails resourceNotFoundDetails=new ResourceNotFoundDetails()
+    @ExceptionHandler(StatusInternalException.class)
+    public ResponseEntity<?> NotFoundException( StatusInternalException exception,HttpServletRequest request){
+        ResponseNotFoundDetails internalError=new ResponseNotFoundDetails()
+                .setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .setError("INTERNAL_SERVER_ERROR")
+                .setMessage(exception.getMessage())
+                .setPath(request.getRequestURI());
+
+        return new ResponseEntity<>(internalError,HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
+
+
+    @ExceptionHandler(StatusNotFoundException.class)
+    public ResponseEntity<?> NotFoundException(StatusNotFoundException exception,HttpServletRequest request){
+        ErrorDetail NotFoundError=new ErrorDetail()
                 .setStatus(HttpStatus.NOT_FOUND.value())
-                .setDetail("Not Found");
-        return new ResponseEntity<>(resourceNotFoundDetails,HttpStatus.NOT_FOUND);
+                .setError("Resource Not Found")
+                .setMessage(exception.getMessage())
+                .setPath(request.getRequestURI());
+
+        return new ResponseEntity<>(NotFoundError,HttpStatus.NOT_FOUND);
 
     }
 
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<?> NotReadableException(HttpMessageNotReadableException exception){
-    ResourceNotFoundDetails resourceNotFoundDetails=new ResourceNotFoundDetails()
-            .setStatus(HttpStatus.BAD_REQUEST.value())
-            .setDetail("Required request body is missing");
-    return new ResponseEntity<>(resourceNotFoundDetails,HttpStatus.BAD_REQUEST);
-
-    }
+//    @ExceptionHandler(HttpMessageNotReadableException.class)
+//    public ResponseEntity<?> NotReadableException(HttpMessageNotReadableException exception){
+//    ResponseNotFoundDetails resourceNotFoundDetails=new ResponseNotFoundDetails()
+//            .setStatus(HttpStatus.BAD_REQUEST.value())
+//            .setDetail("Required request body is missing");
+//    return new ResponseEntity<>(resourceNotFoundDetails,HttpStatus.BAD_REQUEST);
+//
+//    }
 
 
     @ExceptionHandler(PSQLException.class)

@@ -4,17 +4,18 @@ import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
 import br.com.anderson_silva.Banking_system.entities.User;
 import br.com.anderson_silva.Banking_system.entities.Wallet;
+import br.com.anderson_silva.Banking_system.exceptions.StatusInternalException;
+import br.com.anderson_silva.Banking_system.exceptions.StatusNotFoundException;
 import br.com.anderson_silva.Banking_system.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class UserService {
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final EncoderService encoderService;
 
 
@@ -23,81 +24,76 @@ public class UserService {
         this.encoderService = encoderService;
     }
 
-    public UserResponseDTO save(UserRequestDTO userDTO){
+    public UserResponseDTO save(UserRequestDTO userDTO) {//0k
 
-        User user=userDTO.buildUser();
+        User user = userDTO.buildUser();
         user.setPassword(encoderService.encoder(user.getPassword()));
         user.getWallet().setPasswordTransaction(encoderService.encoder(userDTO.getPassword()));
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        user=userRepository.save(user);
-        if(!Objects.isNull(user)){
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        user = userRepository.save(user);
+
+        if (Objects.nonNull(user)) {
             userResponseDTO.setId(user.getId());
-            userResponseDTO.setStatus(200);
             return userResponseDTO;
         }
-        userResponseDTO.setStatus(400);
-        return userResponseDTO;
+        throw new StatusInternalException(String.format("client %s not save",user.getFullName()));
 
     }
-    public UserResponseDTO update(UserRequestDTO userDTO,Long id) throws Exception {
 
-        User user=userDTO.buildUser();
-        user.setPassword(encoderService.encoder(user.getPassword()));
-        user.getWallet().setPasswordTransaction(encoderService.encoder(userDTO.getPassword()));
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        Optional<User> userOptional=this.userRepository.findById(id);
-        if(userOptional.isPresent()){
+    public UserResponseDTO update(UserRequestDTO userDTO, Long id) {//ok
 
-            BeanUtils.copyProperties(user,userOptional.get(),"id","wallet");
-            userResponseDTO.setId(userRepository.save(userOptional.get()).getId());
-            userResponseDTO.setStatus(200);
-            userResponseDTO.setId(id);
-            return userResponseDTO;
-        }
-        userResponseDTO.setStatus(404);
+        User newuser = userDTO.buildUser();
+        newuser.setPassword(encoderService.encoder(newuser.getPassword()));
+        newuser.getWallet().setPasswordTransaction(encoderService.encoder(userDTO.getPassword()));
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        User user = this.userRepository.findById(id)
+                .orElseThrow(() -> new StatusNotFoundException("client not found"));
+
+        BeanUtils.copyProperties(newuser, user, "id", "wallet");
+        userResponseDTO.setId(userRepository.save(user).getId());
         userResponseDTO.setId(id);
+
         return userResponseDTO;
-//
-
 
     }
 
 
-    public  User findByEmail(String email) throws Exception {
+    public User findByEmail(String email) {
 
-        Optional<User> userOptional = this.userRepository.findByEmail(email);
+        User user = this.userRepository.findByEmail(email)
+                .orElseThrow(() -> new StatusNotFoundException("client not found"));
 
-        if(userOptional.isPresent()){
-            return userOptional.get();
-        }
-        throw new Exception();
+        return user;
 
+    }
+    public User findById(Long id) {
+
+        User user = this.userRepository.findById(id)
+                .orElseThrow(() -> new StatusNotFoundException("client not found"));
+
+        return user;
 
     }
 
-    public  User findByCpfCnpj(String cpfCnpj) throws Exception {
-        Optional<User> userOptional=this.userRepository.findByCpfCnpj(cpfCnpj);
-        if(userOptional.isPresent()){
-            return  userOptional.get();
-        }
-        throw new Exception();
+    public User findByCpfCnpj(String cpfCnpj) {
+        User user = this.userRepository.findByCpfCnpj(cpfCnpj)
+                .orElseThrow(() -> new StatusNotFoundException("client CpfCnpj not found"));
 
+        return user;
 
     }
 
-    public boolean updateBalanceUser(Wallet wallet , BigDecimal balance) throws Exception {
+    public boolean updateBalanceUser(Wallet wallet, BigDecimal balance) throws Exception {
 
-        Optional<User> userOptional=this.userRepository.findByWallet(wallet);
+        User user = this.userRepository.findByWallet(wallet)
+                .orElseThrow(() -> new StatusNotFoundException("wallet not found"));
 
-        if(userOptional.isPresent()){
-            userOptional.get().getWallet().setBalance(balance);
-            this.userRepository.save(userOptional.get());
-            return true;
-        }
-        throw new Exception();
+        user.getWallet().setBalance(balance);
+        this.userRepository.save(user);
+
+        return true;
 
     }
-
 
 
 }

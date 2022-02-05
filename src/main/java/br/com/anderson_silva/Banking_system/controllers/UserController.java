@@ -27,38 +27,33 @@ public class UserController {
         this.walletService = walletService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@RequestBody @Valid UserRequestDTO userDTO){
-
-            UserResponseDTO userResponseDTO =this.userService.save(userDTO);
-            return  ResponseEntity.status(userResponseDTO.getStatus()).body(userResponseDTO);
+    @PostMapping("/clients")
+    public ResponseEntity<UserResponseDTO> save(@RequestBody @Valid UserRequestDTO userDTO){
+        UserResponseDTO userResponseDTO = this.userService.save(userDTO);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
 
     }
-    @PutMapping("/update/{id}")
-    public ResponseEntity<UserResponseDTO> update(@RequestBody @Valid UserRequestDTO userDTO, @PathVariable("id") Long id) throws Exception {
+
+    @PutMapping("/clients/{id}")
+    public ResponseEntity<UserResponseDTO> update(@RequestBody @Valid UserRequestDTO userDTO, @PathVariable("id") Long id) {
 
         UserResponseDTO userResponseDTO =this.userService.update(userDTO,id);
-        return  ResponseEntity.status(userResponseDTO.getStatus()).body(userResponseDTO);
+        return  ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
 
     }
 
-    @PostMapping("/transfer")
+    @PostMapping("/clients/transfer")
     public ResponseEntity<TransferResponseDTO> transfer(@RequestBody @Valid TransferRequestDTO transferReqTDO) throws IOException {
 
         TransferResponseDTO transferRespDTO=this.walletService.transfer(transferReqTDO);
         return ResponseEntity.status(transferRespDTO.getStatus()).body(transferRespDTO);
 
     }
-    @GetMapping("/balance")
-    public ResponseEntity<BalanceResponseDTO> balance(@RequestBody @Valid BalanceRequestDTO balanceRequestTDO){
-            BalanceResponseDTO balanceResDTO=new BalanceResponseDTO();
-        try {
-            balanceResDTO=this.walletService.getBalance(balanceRequestTDO);
+    @GetMapping("/clients/balance/{id}")
+    public ResponseEntity<BalanceResponseDTO> balance(@RequestBody @Valid BalanceRequestDTO balanceRequestTDO,@PathVariable("id") Long id){
+
+        BalanceResponseDTO balanceResDTO=this.walletService.getBalance(balanceRequestTDO,id);
             return ResponseEntity.status(HttpStatus.OK).body(balanceResDTO);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(balanceResDTO);
 
     }
 

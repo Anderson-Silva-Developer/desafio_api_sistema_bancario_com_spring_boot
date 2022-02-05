@@ -14,7 +14,6 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class BalanceResponseDTO {
     private  String operation;
-    private  int status;
     private String detail;
     private String balance;
 }

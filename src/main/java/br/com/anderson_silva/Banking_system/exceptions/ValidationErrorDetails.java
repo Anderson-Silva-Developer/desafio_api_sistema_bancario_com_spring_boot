@@ -11,7 +11,9 @@ import lombok.experimental.Accessors;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ValidationErrorDetails extends ErrorDetail{
+public class ValidationErrorDetails{
+    private int status;
+    private String detail;
     private String field;
     private String fieldMessage;
 
