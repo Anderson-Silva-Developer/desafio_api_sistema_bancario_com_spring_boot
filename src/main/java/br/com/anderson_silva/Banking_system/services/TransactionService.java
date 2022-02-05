@@ -19,8 +19,7 @@ public class TransactionService {
     }
 
     public void walletReport(Long idFromWallet, Long idToWallet, BigDecimal amount, Wallet wallet, String typeTransaction){
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = new Date();
+
         Transaction transaction=new Transaction()
                 .setDateTime(new Date())
                 .setWallet(wallet)

@@ -24,7 +24,7 @@ public class UserService {
         this.encoderService = encoderService;
     }
 
-    public UserResponseDTO save(UserRequestDTO userDTO) {//0k
+    public UserResponseDTO save(UserRequestDTO userDTO) {
 
         User user = userDTO.buildUser();
         user.setPassword(encoderService.encoder(user.getPassword()));
@@ -40,7 +40,7 @@ public class UserService {
 
     }
 
-    public UserResponseDTO update(UserRequestDTO userDTO, Long id) {//ok
+    public UserResponseDTO update(UserRequestDTO userDTO, Long id) {
 
         User newuser = userDTO.buildUser();
         newuser.setPassword(encoderService.encoder(newuser.getPassword()));
@@ -83,15 +83,16 @@ public class UserService {
 
     }
 
-    public boolean updateBalanceUser(Wallet wallet, BigDecimal balance) throws Exception {
-
-        User user = this.userRepository.findByWallet(wallet)
-                .orElseThrow(() -> new StatusNotFoundException("wallet not found"));
+    public boolean updateBalanceUser(User user,Wallet wallet, BigDecimal balance) {
 
         user.getWallet().setBalance(balance);
-        this.userRepository.save(user);
+        user=this.userRepository.save(user);
+        if(Objects.nonNull(user)){
+            return true;
+        }
+        return false;
 
-        return true;
+
 
     }
 

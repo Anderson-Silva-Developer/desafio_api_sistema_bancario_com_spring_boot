@@ -40,6 +40,17 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(NotFoundError,HttpStatus.NOT_FOUND);
 
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> illegalArgumentException(IllegalArgumentException exception,HttpServletRequest request){
+        ErrorDetail NotFoundError=new ErrorDetail()
+                .setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .setError("INTERNAL_SERVER_ERROR")
+                .setMessage(exception.getMessage())
+                .setPath(request.getRequestURI());
+
+        return new ResponseEntity<>(NotFoundError,HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
 
 
 //    @ExceptionHandler(HttpMessageNotReadableException.class)

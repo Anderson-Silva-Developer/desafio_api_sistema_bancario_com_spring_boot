@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
 
-    public Optional<User> findByWallet(Wallet wallet);
+
     public Optional<User> findById(Long id);
     public Optional<User> findByEmail(String email);
     public Optional<User> findByCpfCnpj(String  cpfCnpj);

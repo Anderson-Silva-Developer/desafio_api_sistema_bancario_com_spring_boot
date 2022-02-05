@@ -2,6 +2,7 @@ package br.com.anderson_silva.Banking_system.services;
 
 import br.com.anderson_silva.Banking_system.dto.request.TransferRequestDTO;
 import br.com.anderson_silva.Banking_system.entities.User;
+import br.com.anderson_silva.Banking_system.exceptions.StatusNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,10 @@ public class EncoderService {
 
     }
     public  Boolean checkPassword(String password, User user){
-        if(!Objects.isNull(user) && !password.equals("")) {
+        if(Objects.nonNull(user) && !password.equals("")) {
             return encoder.matches(password, user.getWallet().getPasswordTransaction());
         }
-        return false;
+        throw new StatusNotFoundException("usuário ou senha de transação incorreto");
+
     }
 }

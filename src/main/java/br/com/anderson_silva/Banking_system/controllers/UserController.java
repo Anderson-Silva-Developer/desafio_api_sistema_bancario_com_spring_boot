@@ -6,6 +6,7 @@ import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.BalanceResponseDTO;
 import br.com.anderson_silva.Banking_system.dto.response.TransferResponseDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
+import br.com.anderson_silva.Banking_system.exceptions.StatusNotFoundException;
 import br.com.anderson_silva.Banking_system.services.UserService;
 import br.com.anderson_silva.Banking_system.services.WalletService;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("/clients")
-    public ResponseEntity<UserResponseDTO> save(@RequestBody @Valid UserRequestDTO userDTO){
+    public ResponseEntity<UserResponseDTO> save(@RequestBody @Valid UserRequestDTO userDTO) throws StatusNotFoundException {
         UserResponseDTO userResponseDTO = this.userService.save(userDTO);
         return  ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
 
@@ -46,7 +47,7 @@ public class UserController {
     public ResponseEntity<TransferResponseDTO> transfer(@RequestBody @Valid TransferRequestDTO transferReqTDO) throws IOException {
 
         TransferResponseDTO transferRespDTO=this.walletService.transfer(transferReqTDO);
-        return ResponseEntity.status(transferRespDTO.getStatus()).body(transferRespDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(transferRespDTO);
 
     }
     @GetMapping("/clients/balance/{id}")
