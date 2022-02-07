@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/Bank")
@@ -44,7 +43,7 @@ public class UserController {
     }
 
     @PostMapping("/clients/transfer")
-    public ResponseEntity<TransferResponseDTO> transfer(@RequestBody @Valid TransferRequestDTO transferReqTDO) throws IOException {
+    public ResponseEntity<TransferResponseDTO> transfer(@RequestBody @Valid TransferRequestDTO transferReqTDO) {
 
         TransferResponseDTO transferRespDTO=this.walletService.transfer(transferReqTDO);
         return ResponseEntity.status(HttpStatus.OK).body(transferRespDTO);

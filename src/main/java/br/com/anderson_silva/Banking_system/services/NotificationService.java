@@ -15,7 +15,7 @@ import java.io.IOException;
 public class NotificationService {
 
 
-    public int sendMail(String userFromName,String amount,String email) throws IOException {
+    public int sendMail(String userFromName, String amount, String email) {
         Email from = new Email(System.getenv("SENDER_MAIL"));
         String subject = "Bank\nTransação Bancária de Transferência";
         Email to = new Email(email);
@@ -30,8 +30,9 @@ public class NotificationService {
             request.setBody(mail.build());
             Response response = sg.api(request);
             return  response.getStatusCode();
-        } catch (IOException ex) {
-            throw ex;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return 503;
         }
     }
 

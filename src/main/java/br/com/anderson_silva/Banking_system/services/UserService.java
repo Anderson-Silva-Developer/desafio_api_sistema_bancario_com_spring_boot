@@ -11,6 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -50,10 +52,14 @@ public class UserService {
                 .orElseThrow(() -> new StatusNotFoundException("client not found"));
 
         BeanUtils.copyProperties(newuser, user, "id", "wallet");
-        userResponseDTO.setId(userRepository.save(user).getId());
-        userResponseDTO.setId(id);
+        user=userRepository.save(user);
+        if(Objects.nonNull(user)){
+            userResponseDTO.setId(user.getId());
+            userResponseDTO.setId(id);
+            return userResponseDTO;
+        }
+        throw new StatusInternalException(String.format("client %s not update",user.getFullName()));
 
-        return userResponseDTO;
 
     }
 
@@ -83,15 +89,21 @@ public class UserService {
 
     }
 
-    public boolean updateBalanceUser(User user,Wallet wallet, BigDecimal balance) {
+    public boolean updateBalanceUser(User userOrigin,User userDestiny,BigDecimal amount) {
 
-        user.getWallet().setBalance(balance);
-        user=this.userRepository.save(user);
-        if(Objects.nonNull(user)){
+        BigDecimal newAmountOrigin = userOrigin.getWallet().getBalance().subtract(amount);
+        BigDecimal newAmountDestiny =userDestiny.getWallet().getBalance().add(amount);
+        userOrigin.getWallet().setBalance(newAmountOrigin);
+        userDestiny.getWallet().setBalance(newAmountDestiny);
+        List<User> listUser=new ArrayList<>();
+        listUser.add(userOrigin);
+        listUser.add(userDestiny);
+        List<User> users = this.userRepository.saveAll(listUser);
+
+        if (Objects.nonNull(users)){
             return true;
         }
-        return false;
-
+        throw new StatusInternalException("Erro balance update");
 
 
     }

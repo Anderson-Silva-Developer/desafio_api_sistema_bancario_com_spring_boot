@@ -17,6 +17,7 @@ public class EndpointTransfer extends UserControllerTest {
     String errorAmountDestiny="O campo amountDestiny apresenta formato inválido  use ex:[1.0],[1.000],[0,10],[1.100,00] e maior que 0";
     String errorCpfCnpjDestiny ="campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou cnpj[xxx.xxx.xxx-xx]";
     String errorTransactionPassword="o campo transactionPassword deve ficar entre 8 e 16 caracteres";
+    String url="/Bank/clients/transfer";
 
     @Test
     @WithMockUser
@@ -35,7 +36,7 @@ public class EndpointTransfer extends UserControllerTest {
 
         Mockito.when(this.walletService.transfer(any())).thenReturn(transferRespDTO);
 
-        new EndpointUtilTest().expected_success200_post(mockMvc, "/Bank/transfer",transferReqDTO);
+        new EndpointUtilTest().expected_success200_post(mockMvc, url,transferReqDTO);
 
         TransferResponseDTO transferResp= this.walletService.transfer(transferReqDTO);
         assertEquals(transferResp.getStatus(),200);
@@ -49,7 +50,7 @@ public class EndpointTransfer extends UserControllerTest {
                 .setCpfCnpjDestiny("957.051.460-43")
                 .setTransactionPassword("@12345678");
 
-        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, "/Bank/transfer",transferReqDTO);
+        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, url,transferReqDTO);
         assertTrue(StringUtils.contains(error,errorAmountDestiny ));
 
     }
@@ -60,7 +61,7 @@ public class EndpointTransfer extends UserControllerTest {
                 .setCpfCnpjDestiny("957.051.460-43")
                 .setTransactionPassword("@12345678");
 
-        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, "/Bank/transfer",transferReqDTO);
+        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, url,transferReqDTO);
         assertTrue(StringUtils.contains(error,errorAmountDestiny ));
 
     }
@@ -72,7 +73,7 @@ public class EndpointTransfer extends UserControllerTest {
                 .setCpfCnpjDestiny("957.051.460-43")
                 .setTransactionPassword("@12345678");
 
-        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, "/Bank/transfer",transferReqDTO);
+        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, url,transferReqDTO);
         assertTrue(StringUtils.contains(error,errorAmountDestiny ));
 
     }
@@ -84,7 +85,7 @@ public class EndpointTransfer extends UserControllerTest {
                 .setCpfCnpjDestiny("")
                 .setTransactionPassword("@12345678");
 
-        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, "/Bank/transfer",transferReqDTO);
+        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, url,transferReqDTO);
         assertTrue(StringUtils.contains(error, errorCpfCnpjDestiny));
 
     }
@@ -95,7 +96,7 @@ public class EndpointTransfer extends UserControllerTest {
                 .setAmountDestiny("10")
                 .setTransactionPassword("@12345678");
 
-        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, "/Bank/transfer",transferReqDTO);
+        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, url,transferReqDTO);
         assertTrue(StringUtils.contains(error, errorCpfCnpjDestiny));
 
     }
@@ -107,7 +108,7 @@ public class EndpointTransfer extends UserControllerTest {
                 .setCpfCnpjDestiny("545-45-45-454")
                 .setTransactionPassword("@12345678");
 
-        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, "/Bank/transfer",transferReqDTO);
+        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, url,transferReqDTO);
         assertTrue(StringUtils.contains(error, errorCpfCnpjDestiny));
 
     }
@@ -119,7 +120,7 @@ public class EndpointTransfer extends UserControllerTest {
                 .setCpfCnpjDestiny("957.051.460-43")
                 .setTransactionPassword("");
 
-        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, "/Bank/transfer",transferReqDTO);
+        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, url,transferReqDTO);
         assertTrue(StringUtils.contains(error,errorTransactionPassword));
 
     }
@@ -131,7 +132,7 @@ public class EndpointTransfer extends UserControllerTest {
                 .setCpfCnpjDestiny("957.051.460-43");
 
 
-        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, "/Bank/transfer",transferReqDTO);
+        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, url,transferReqDTO);
         assertTrue(StringUtils.contains(error,errorTransactionPassword));
 
     }
@@ -143,7 +144,7 @@ public class EndpointTransfer extends UserControllerTest {
                 .setCpfCnpjDestiny("957.051.460-43")
                 .setTransactionPassword("dsd");
 
-        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, "/Bank/transfer",transferReqDTO);
+        String error =new EndpointUtilTest().expected_failure400_post(mockMvc, url,transferReqDTO);
         assertTrue(StringUtils.contains(error,errorTransactionPassword));
 
     }

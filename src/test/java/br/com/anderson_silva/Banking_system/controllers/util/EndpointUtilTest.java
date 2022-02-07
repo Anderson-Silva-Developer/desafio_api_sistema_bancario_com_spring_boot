@@ -12,8 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EndpointUtilTest {
 
 ObjectMapper objectMapper=new ObjectMapper();
-
- public void expected_success200_post(MockMvc mockMvc,String url,Object contentBody) throws Exception {
+    public void expected_success200_post(MockMvc mockMvc, String url, Object contentBody) throws Exception {
 
         mockMvc.perform(post(url)
                         .contentType("application/json")
@@ -21,10 +20,29 @@ ObjectMapper objectMapper=new ObjectMapper();
                         .content(objectMapper.writeValueAsString(contentBody)))
                 .andExpect(status().is(200));
 
+    }
+
+ public void expected_success201_post(MockMvc mockMvc, String url, Object contentBody) throws Exception {
+
+        mockMvc.perform(post(url)
+                        .contentType("application/json")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .content(objectMapper.writeValueAsString(contentBody)))
+                .andExpect(status().is(201));
+
 }
  public void expected_success200_get(MockMvc mockMvc,String url,Object contentBody) throws Exception {
 
-        mockMvc.perform(get(url)
+        mockMvc.perform(get(url,1)
+                        .contentType("application/json")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .content(objectMapper.writeValueAsString(contentBody)))
+                .andExpect(status().is(200));
+
+    }
+    public void expected_success200_put(MockMvc mockMvc,String url,Object contentBody) throws Exception {
+
+        mockMvc.perform(get(url,1)
                         .contentType("application/json")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(contentBody)))
@@ -33,7 +51,7 @@ ObjectMapper objectMapper=new ObjectMapper();
     }
     public String expected_failure400_get(MockMvc mockMvc,String url,Object contentBody) throws Exception {
 
-        String error=mockMvc.perform(get(url)
+        String error=mockMvc.perform(get(url,1)
                         .contentType("application/json")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(contentBody)))

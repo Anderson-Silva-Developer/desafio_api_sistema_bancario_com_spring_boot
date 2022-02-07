@@ -38,7 +38,7 @@ public class WalletService {
 
     }
 
-    public TransferResponseDTO transfer(TransferRequestDTO transferReqTDO) throws IOException {
+    public TransferResponseDTO transfer(TransferRequestDTO transferReqTDO) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         DecimalFormat df = new DecimalFormat("###,##0.00");
@@ -98,26 +98,10 @@ public class WalletService {
 
     public boolean Deposit(User userOrigin, User userDestiny, BigDecimal amount) {
 
-        Wallet walletOrigin = getWallet(userOrigin.getWallet().getId());
-        Wallet walletDestiny = getWallet(userDestiny.getWallet().getId());
-        BigDecimal newAmountOrigin = walletOrigin.getBalance().subtract(amount);
-        BigDecimal newAmountDestiny = walletDestiny.getBalance().add(amount);
-
-        boolean updateOrigin = this.userService.updateBalanceUser(userOrigin, walletOrigin, newAmountOrigin);
-        if (!updateOrigin) {
-            this.userService.updateBalanceUser(userOrigin, walletOrigin, newAmountOrigin.add(amount));
-            return false;
-        }
-        boolean updateDestiny = this.userService.updateBalanceUser(userDestiny, walletDestiny, newAmountDestiny);
-        if (!updateDestiny) {
-            this.userService.updateBalanceUser(userDestiny, walletDestiny, newAmountDestiny.subtract(amount));
-            return false;
-        }
-
-        return true;
-
+        return this.userService.updateBalanceUser(userOrigin,userDestiny ,amount);
 
     }
+
 
     public BalanceResponseDTO getBalance(BalanceRequestDTO balanceReqDTO, Long id) {
 
@@ -135,13 +119,5 @@ public class WalletService {
 
     }
 
-    public Wallet getWallet(Long id) {
-
-        Wallet getwallet = this.walletRepository.findById(id)
-                .orElseThrow(() -> new StatusNotFoundException("wallet not found"));
-
-        return getwallet;
-
-    }
 
 }
