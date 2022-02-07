@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 public class UserDataDetails implements UserDetails {
-    private  final Optional<User> user;
+    private final Optional<User> user;
 
     public UserDataDetails(Optional<User> user) {
         this.user = user;

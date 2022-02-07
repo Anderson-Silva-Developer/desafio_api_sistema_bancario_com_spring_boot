@@ -11,11 +11,11 @@ import org.springframework.security.core.Authentication;
 @NoArgsConstructor
 public class ValidatorTransfer {
 
-    public TransferResponseDTO validatorRequestTransfer(Authentication auth, TransferRequestDTO transferReqTDO, User userOrigin, User userDestiny){
+    public TransferResponseDTO validatorRequestTransfer(Authentication auth, TransferRequestDTO transferReqTDO, User userOrigin, User userDestiny) {
 
 
-        if( userOrigin==userDestiny){
-            return  new TransferResponseDTO()
+        if (userOrigin == userDestiny) {
+            return new TransferResponseDTO()
                     .setOperation("transferência")
                     .setStatus(HttpStatus.FORBIDDEN.value())
                     .setAmountDestiny(transferReqTDO.getAmountDestiny())
@@ -25,8 +25,8 @@ public class ValidatorTransfer {
         }
 
 
-        if(!auth.isAuthenticated()){
-            return  new TransferResponseDTO()
+        if (!auth.isAuthenticated()) {
+            return new TransferResponseDTO()
                     .setOperation("transferência")
                     .setStatus(HttpStatus.FORBIDDEN.value())
                     .setAmountDestiny(transferReqTDO.getAmountDestiny())
@@ -34,8 +34,8 @@ public class ValidatorTransfer {
                     .setDetail("usuário não autenticado");
         }
 
-        if(userOrigin.getTypeUser().equals("shopkeeper")){
-            return  new TransferResponseDTO()
+        if (userOrigin.getTypeUser().equals("shopkeeper")) {
+            return new TransferResponseDTO()
                     .setOperation("transferência")
                     .setStatus(HttpStatus.FORBIDDEN.value())
                     .setAmountDestiny(transferReqTDO.getAmountDestiny())

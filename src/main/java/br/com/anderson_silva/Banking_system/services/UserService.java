@@ -38,7 +38,7 @@ public class UserService {
             userResponseDTO.setId(user.getId());
             return userResponseDTO;
         }
-        throw new StatusInternalException(String.format("client %s not save",user.getFullName()));
+        throw new StatusInternalException(String.format("client %s not save", user.getFullName()));
 
     }
 
@@ -52,13 +52,13 @@ public class UserService {
                 .orElseThrow(() -> new StatusNotFoundException("client not found"));
 
         BeanUtils.copyProperties(newuser, user, "id", "wallet");
-        user=userRepository.save(user);
-        if(Objects.nonNull(user)){
+        user = userRepository.save(user);
+        if (Objects.nonNull(user)) {
             userResponseDTO.setId(user.getId());
             userResponseDTO.setId(id);
             return userResponseDTO;
         }
-        throw new StatusInternalException(String.format("client %s not update",user.getFullName()));
+        throw new StatusInternalException(String.format("client %s not update", user.getFullName()));
 
 
     }
@@ -72,6 +72,7 @@ public class UserService {
         return user;
 
     }
+
     public User findById(Long id) {
 
         User user = this.userRepository.findById(id)
@@ -89,18 +90,18 @@ public class UserService {
 
     }
 
-    public boolean updateBalanceUser(User userOrigin,User userDestiny,BigDecimal amount) {
+    public boolean updateBalanceUser(User userOrigin, User userDestiny, BigDecimal amount) {
 
         BigDecimal newAmountOrigin = userOrigin.getWallet().getBalance().subtract(amount);
-        BigDecimal newAmountDestiny =userDestiny.getWallet().getBalance().add(amount);
+        BigDecimal newAmountDestiny = userDestiny.getWallet().getBalance().add(amount);
         userOrigin.getWallet().setBalance(newAmountOrigin);
         userDestiny.getWallet().setBalance(newAmountDestiny);
-        List<User> listUser=new ArrayList<>();
+        List<User> listUser = new ArrayList<>();
         listUser.add(userOrigin);
         listUser.add(userDestiny);
         List<User> users = this.userRepository.saveAll(listUser);
 
-        if (Objects.nonNull(users)){
+        if (Objects.nonNull(users)) {
             return true;
         }
         throw new StatusInternalException("Erro balance update");

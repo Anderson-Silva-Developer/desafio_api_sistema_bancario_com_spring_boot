@@ -6,21 +6,19 @@ import br.com.anderson_silva.Banking_system.repositories.TransactionRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
 public class TransactionService {
-    private  final TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
 
     public TransactionService(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
     }
 
-    public void walletReport(Long idFromWallet, Long idToWallet, BigDecimal amount, Wallet wallet, String typeTransaction){
+    public void walletReport(Long idFromWallet, Long idToWallet, BigDecimal amount, Wallet wallet, String typeTransaction) {
 
-        Transaction transaction=new Transaction()
+        Transaction transaction = new Transaction()
                 .setDateTime(new Date())
                 .setWallet(wallet)
                 .setIdFromWallet(idFromWallet)
@@ -30,7 +28,6 @@ public class TransactionService {
         this.transactionRepository.save(transaction);
 
     }
-
 
 
 }

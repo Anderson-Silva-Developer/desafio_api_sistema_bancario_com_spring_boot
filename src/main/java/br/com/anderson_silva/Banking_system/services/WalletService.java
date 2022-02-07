@@ -98,7 +98,7 @@ public class WalletService {
 
     public boolean Deposit(User userOrigin, User userDestiny, BigDecimal amount) {
 
-        return this.userService.updateBalanceUser(userOrigin,userDestiny ,amount);
+        return this.userService.updateBalanceUser(userOrigin, userDestiny, amount);
 
     }
 

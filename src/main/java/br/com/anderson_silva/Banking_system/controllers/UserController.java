@@ -6,7 +6,6 @@ import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.BalanceResponseDTO;
 import br.com.anderson_silva.Banking_system.dto.response.TransferResponseDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
-import br.com.anderson_silva.Banking_system.exceptions.StatusNotFoundException;
 import br.com.anderson_silva.Banking_system.services.UserService;
 import br.com.anderson_silva.Banking_system.services.WalletService;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,7 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-    private  final WalletService walletService;
+    private final WalletService walletService;
 
     public UserController(UserService userService, WalletService walletService) {
         this.userService = userService;
@@ -28,32 +27,34 @@ public class UserController {
     }
 
     @PostMapping("/clients")
-    public ResponseEntity<UserResponseDTO> save(@RequestBody @Valid UserRequestDTO userDTO) throws StatusNotFoundException {
+    public ResponseEntity<UserResponseDTO> save(@RequestBody @Valid UserRequestDTO userDTO) {
+
         UserResponseDTO userResponseDTO = this.userService.save(userDTO);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
 
     }
 
     @PutMapping("/clients/{id}")
     public ResponseEntity<UserResponseDTO> update(@RequestBody @Valid UserRequestDTO userDTO, @PathVariable("id") Long id) {
 
-        UserResponseDTO userResponseDTO =this.userService.update(userDTO,id);
-        return  ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
+        UserResponseDTO userResponseDTO = this.userService.update(userDTO, id);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
 
     }
 
     @PostMapping("/clients/transfer")
     public ResponseEntity<TransferResponseDTO> transfer(@RequestBody @Valid TransferRequestDTO transferReqTDO) {
 
-        TransferResponseDTO transferRespDTO=this.walletService.transfer(transferReqTDO);
+        TransferResponseDTO transferRespDTO = this.walletService.transfer(transferReqTDO);
         return ResponseEntity.status(HttpStatus.OK).body(transferRespDTO);
 
     }
-    @GetMapping("/clients/balance/{id}")
-    public ResponseEntity<BalanceResponseDTO> balance(@RequestBody @Valid BalanceRequestDTO balanceRequestTDO,@PathVariable("id") Long id){
 
-        BalanceResponseDTO balanceResDTO=this.walletService.getBalance(balanceRequestTDO,id);
-            return ResponseEntity.status(HttpStatus.OK).body(balanceResDTO);
+    @GetMapping("/clients/balance/{id}")
+    public ResponseEntity<BalanceResponseDTO> balance(@RequestBody @Valid BalanceRequestDTO balanceRequestTDO, @PathVariable("id") Long id) {
+
+        BalanceResponseDTO balanceResDTO = this.walletService.getBalance(balanceRequestTDO, id);
+        return ResponseEntity.status(HttpStatus.OK).body(balanceResDTO);
 
     }
 

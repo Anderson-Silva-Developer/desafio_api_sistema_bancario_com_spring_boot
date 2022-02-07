@@ -23,7 +23,8 @@ public class ServiceUserDetailsImpl  implements UserDetailsService {
 
         Optional<User> user=repository.findByEmail(username);
         if(user.isEmpty()){
-            throw new UsernameNotFoundException("Usuário ["+username+"] não encontrado");
+
+            throw new UsernameNotFoundException(String.format("Usuário %s não encontrado",username));
         }
         return new UserDataDetails(user);
     }
