@@ -17,7 +17,7 @@ public class EndpointTransfer extends UserControllerTest {
     String errorAmountDestiny="O campo amountDestiny apresenta formato inválido  use ex:[1.0],[1.000],[0,10],[1.100,00] e maior que 0";
     String errorCpfCnpjDestiny ="campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou cnpj[xxx.xxx.xxx-xx]";
     String errorTransactionPassword="o campo transactionPassword deve ficar entre 8 e 16 caracteres";
-    String url="/Bank/clients/transfer";
+    String url="/Bank/transfer";
 
     @Test
     @WithMockUser

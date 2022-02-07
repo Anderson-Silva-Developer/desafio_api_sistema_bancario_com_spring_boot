@@ -3,7 +3,6 @@ package br.com.anderson_silva.Banking_system.services;
 import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
 import br.com.anderson_silva.Banking_system.entities.User;
-import br.com.anderson_silva.Banking_system.entities.Wallet;
 import br.com.anderson_silva.Banking_system.exceptions.StatusInternalException;
 import br.com.anderson_silva.Banking_system.exceptions.StatusNotFoundException;
 import br.com.anderson_silva.Banking_system.repositories.UserRepository;
@@ -31,12 +30,10 @@ public class UserService {
         User user = userDTO.buildUser();
         user.setPassword(encoderService.encoder(user.getPassword()));
         user.getWallet().setPasswordTransaction(encoderService.encoder(userDTO.getPassword()));
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
         user = userRepository.save(user);
 
-        if (Objects.nonNull(user)) {
-            userResponseDTO.setId(user.getId());
-            return userResponseDTO;
+        if (Objects.nonNull(user.getId())) {
+            return  new UserResponseDTO(user.getId());
         }
         throw new StatusInternalException(String.format("client %s not save", user.getFullName()));
 
@@ -47,46 +44,34 @@ public class UserService {
         User newuser = userDTO.buildUser();
         newuser.setPassword(encoderService.encoder(newuser.getPassword()));
         newuser.getWallet().setPasswordTransaction(encoderService.encoder(userDTO.getPassword()));
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new StatusNotFoundException("client not found"));
 
         BeanUtils.copyProperties(newuser, user, "id", "wallet");
-        user = userRepository.save(user);
-        if (Objects.nonNull(user)) {
-            userResponseDTO.setId(user.getId());
-            userResponseDTO.setId(id);
-            return userResponseDTO;
-        }
-        throw new StatusInternalException(String.format("client %s not update", user.getFullName()));
+        userRepository.save(user);
+        return new UserResponseDTO(user.getId());
 
-
-    }
+}
 
 
     public User findByEmail(String email) {
 
-        User user = this.userRepository.findByEmail(email)
+        return this.userRepository.findByEmail(email)
                 .orElseThrow(() -> new StatusNotFoundException("client not found"));
-
-        return user;
 
     }
 
     public User findById(Long id) {
 
-        User user = this.userRepository.findById(id)
+        return this.userRepository.findById(id)
                 .orElseThrow(() -> new StatusNotFoundException("client not found"));
-
-        return user;
 
     }
 
     public User findByCpfCnpj(String cpfCnpj) {
-        User user = this.userRepository.findByCpfCnpj(cpfCnpj)
-                .orElseThrow(() -> new StatusNotFoundException("client CpfCnpj not found"));
 
-        return user;
+        return this.userRepository.findByCpfCnpj(cpfCnpj)
+                .orElseThrow(() -> new StatusNotFoundException("client CpfCnpj not found"));
 
     }
 

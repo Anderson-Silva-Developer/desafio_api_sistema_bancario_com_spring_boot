@@ -41,7 +41,6 @@ public class WalletService {
     public TransferResponseDTO transfer(TransferRequestDTO transferReqTDO) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        DecimalFormat df = new DecimalFormat("###,##0.00");
         User userOrigin = this.userService.findByEmail(auth.getName());
         User userDestiny = this.userService.findByCpfCnpj(transferReqTDO.getCpfCnpjDestiny());
         this.encoderService.checkPassword(transferReqTDO.getTransactionPassword(), userOrigin);
@@ -67,7 +66,7 @@ public class WalletService {
 
             this.transactionService
                     .walletReport(userOrigin.getWallet().getId(), userDestiny.getWallet().getId(), balance, userOrigin.getWallet(), "transfer");
-            this.notificationService.sendMail(userOrigin.getFullName(), df.format(balance), userDestiny.getEmail());
+            this.notificationService.sendMail(userOrigin.getFullName(),getDecimalFormat(balance), userDestiny.getEmail());
 
             return transferRespTDO;
 
@@ -111,12 +110,17 @@ public class WalletService {
         Wallet wallet = this.walletRepository.findById(user.getWallet().getId())
                 .orElseThrow(() -> new StatusNotFoundException("wallet not found"));
 
-        DecimalFormat df = new DecimalFormat("###,##0.00");
+
         return new BalanceResponseDTO()
                 .setOperation("Consulta de saldo")
                 .setDetail("Saldo")
-                .setBalance(df.format(wallet.getBalance()));
+                .setBalance(getDecimalFormat(wallet.getBalance()));
 
+    }
+
+    private String  getDecimalFormat(BigDecimal balance) {
+        DecimalFormat df = new DecimalFormat("###,##0.00");
+        return df.format(balance);
     }
 
 

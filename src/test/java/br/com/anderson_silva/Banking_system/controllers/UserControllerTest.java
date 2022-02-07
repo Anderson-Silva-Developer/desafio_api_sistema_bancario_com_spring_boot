@@ -1,7 +1,6 @@
 package br.com.anderson_silva.Banking_system.controllers;
 
 
-import br.com.anderson_silva.Banking_system.controllers.UserController;
 import br.com.anderson_silva.Banking_system.services.ServiceUserDetailsImpl;
 import br.com.anderson_silva.Banking_system.services.UserService;
 import br.com.anderson_silva.Banking_system.services.WalletService;
@@ -13,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 
-@WebMvcTest(controllers = UserController.class)
+@WebMvcTest(controllers = BankController.class)
 public
 class UserControllerTest {
 

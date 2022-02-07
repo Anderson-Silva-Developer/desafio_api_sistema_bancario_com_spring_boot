@@ -3,9 +3,11 @@ package br.com.anderson_silva.Banking_system.controllers.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -40,13 +42,14 @@ ObjectMapper objectMapper=new ObjectMapper();
                 .andExpect(status().is(200));
 
     }
-    public void expected_success200_put(MockMvc mockMvc,String url,Object contentBody) throws Exception {
+    public ResultActions expected_success200_put(MockMvc mockMvc,String url,Object contentBody) throws Exception {
 
-        mockMvc.perform(get(url,1)
+        ResultActions resultput = mockMvc.perform(put(url, 1)
                         .contentType("application/json")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(contentBody)))
                 .andExpect(status().is(200));
+        return resultput;
 
     }
     public String expected_failure400_get(MockMvc mockMvc,String url,Object contentBody) throws Exception {

@@ -1,17 +1,15 @@
 package br.com.anderson_silva.Banking_system.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class UserResponseDTO {
 
     private Long id;
+    public UserResponseDTO(Long id){
+        this.id=id;
+
+    }
 
 }

@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 public class EndpointBalance extends UserControllerTest {
 
     String errorTransactionPassword="o campo transactionPassword deve ficar entre 8 e 16 caracteres";
-    String url="/Bank/clients/balance/{id}";
+    String url="/Bank/balance/{id}";
 
     @Test
     @WithMockUser

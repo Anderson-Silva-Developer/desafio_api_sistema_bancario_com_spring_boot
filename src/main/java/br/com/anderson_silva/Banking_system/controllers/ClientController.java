@@ -1,10 +1,6 @@
 package br.com.anderson_silva.Banking_system.controllers;
 
-import br.com.anderson_silva.Banking_system.dto.request.BalanceRequestDTO;
-import br.com.anderson_silva.Banking_system.dto.request.TransferRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
-import br.com.anderson_silva.Banking_system.dto.response.BalanceResponseDTO;
-import br.com.anderson_silva.Banking_system.dto.response.TransferResponseDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
 import br.com.anderson_silva.Banking_system.services.UserService;
 import br.com.anderson_silva.Banking_system.services.WalletService;
@@ -15,15 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/Bank")
-public class UserController {
+@RequestMapping("/")
+public class ClientController {
 
     private final UserService userService;
-    private final WalletService walletService;
 
-    public UserController(UserService userService, WalletService walletService) {
+    public ClientController(UserService userService) {
         this.userService = userService;
-        this.walletService = walletService;
+
     }
 
     @PostMapping("/clients")
@@ -39,22 +34,6 @@ public class UserController {
 
         UserResponseDTO userResponseDTO = this.userService.update(userDTO, id);
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
-
-    }
-
-    @PostMapping("/clients/transfer")
-    public ResponseEntity<TransferResponseDTO> transfer(@RequestBody @Valid TransferRequestDTO transferReqTDO) {
-
-        TransferResponseDTO transferRespDTO = this.walletService.transfer(transferReqTDO);
-        return ResponseEntity.status(HttpStatus.OK).body(transferRespDTO);
-
-    }
-
-    @GetMapping("/clients/balance/{id}")
-    public ResponseEntity<BalanceResponseDTO> balance(@RequestBody @Valid BalanceRequestDTO balanceRequestTDO, @PathVariable("id") Long id) {
-
-        BalanceResponseDTO balanceResDTO = this.walletService.getBalance(balanceRequestTDO, id);
-        return ResponseEntity.status(HttpStatus.OK).body(balanceResDTO);
 
     }
 

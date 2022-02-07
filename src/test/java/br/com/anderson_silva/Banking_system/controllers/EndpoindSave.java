@@ -17,7 +17,7 @@ public class EndpoindSave extends UserControllerTest {
     String errorCpfCnpj="campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou cnpj[xxx.xxx.xxx-xx]";
     String errorTypeUser="O campo typeUser aceita apenas os valores [client] ou [shopkeeper]";
     String errorPassword="o campo password deve ficar entre 8 e 16 caracteres";
-    String url="/Bank/clients";
+    String url="/clients";
 
 
     @Test
@@ -29,8 +29,8 @@ public class EndpoindSave extends UserControllerTest {
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        UserResponseDTO userResponseDTO=new UserResponseDTO();
-        userResponseDTO.setId(1L);
+        UserResponseDTO userResponseDTO=new UserResponseDTO(1L);
+
 
         Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
 
