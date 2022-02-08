@@ -3,7 +3,6 @@ package br.com.anderson_silva.Banking_system.controllers;
 import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
 import br.com.anderson_silva.Banking_system.services.UserService;
-import br.com.anderson_silva.Banking_system.services.WalletService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

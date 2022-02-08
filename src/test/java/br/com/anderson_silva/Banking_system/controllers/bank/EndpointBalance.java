@@ -1,6 +1,6 @@
-package br.com.anderson_silva.Banking_system.controllers;
+package br.com.anderson_silva.Banking_system.controllers.bank;
 
-import br.com.anderson_silva.Banking_system.controllers.util.EndpointUtilTest;
+import br.com.anderson_silva.Banking_system.controllers.util.EndpointUtilBankTest;
 import br.com.anderson_silva.Banking_system.dto.request.BalanceRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.BalanceResponseDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
-public class EndpointBalance extends UserControllerTest {
+public class EndpointBalance extends BankControllerTest {
 
     String errorTransactionPassword="o campo transactionPassword deve ficar entre 8 e 16 caracteres";
     String url="/Bank/balance/{id}";
@@ -35,7 +35,7 @@ public class EndpointBalance extends UserControllerTest {
 
 
         Mockito.when(this.walletService.getBalance(any(),any())).thenReturn(balanceRespDTO);
-        new EndpointUtilTest().expected_success200_get(mockMvc, url, balanceReqDTO);
+        new EndpointUtilBankTest().expected_success200_get(mockMvc, url, balanceReqDTO);
 
         BalanceResponseDTO balanceResponseDTO= this.walletService.getBalance(balanceReqDTO,1L);
 //        assertEquals(balanceResponseDTO.getStatus(),200);
@@ -51,7 +51,7 @@ public class EndpointBalance extends UserControllerTest {
         BalanceRequestDTO balanceReqDTO=new BalanceRequestDTO()
                 .setTransactionPassword("");
 
-        String error=new EndpointUtilTest().expected_failure400_get(mockMvc, url, balanceReqDTO);
+        String error=new EndpointUtilBankTest().expected_failure400_get(mockMvc, url, balanceReqDTO);
         assertTrue(StringUtils.contains(error,errorTransactionPassword));
 
     }
@@ -63,7 +63,7 @@ public class EndpointBalance extends UserControllerTest {
 
         BalanceRequestDTO balanceReqDTO=new BalanceRequestDTO();
 
-        String error=new EndpointUtilTest().expected_failure400_get(mockMvc, url, balanceReqDTO);
+        String error=new EndpointUtilBankTest().expected_failure400_get(mockMvc, url, balanceReqDTO);
         assertTrue(StringUtils.contains(error,errorTransactionPassword));
 
     }
@@ -76,7 +76,7 @@ public class EndpointBalance extends UserControllerTest {
         BalanceRequestDTO balanceReqDTO=new BalanceRequestDTO()
                 .setTransactionPassword("ssd");
 
-        String error=new EndpointUtilTest().expected_failure400_get(mockMvc, url, balanceReqDTO);
+        String error=new EndpointUtilBankTest().expected_failure400_get(mockMvc, url, balanceReqDTO);
         assertTrue(StringUtils.contains(error,errorTransactionPassword));
 
     }

@@ -14,9 +14,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -96,8 +97,15 @@ public class WalletService {
     }
 
     public boolean Deposit(User userOrigin, User userDestiny, BigDecimal amount) {
+        BigDecimal newAmountOrigin = userOrigin.getWallet().getBalance().subtract(amount);
+        BigDecimal newAmountDestiny = userDestiny.getWallet().getBalance().add(amount);
+        userOrigin.getWallet().setBalance(newAmountOrigin);
+        userDestiny.getWallet().setBalance(newAmountDestiny);
+        List<User> listUser = new ArrayList<>();
+        listUser.add(userOrigin);
+        listUser.add(userDestiny);
 
-        return this.userService.updateBalanceUser(userOrigin, userDestiny, amount);
+        return this.userService.updateAllUsers(listUser);
 
     }
 

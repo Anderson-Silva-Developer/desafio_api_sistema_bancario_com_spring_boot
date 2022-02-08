@@ -1,7 +1,6 @@
 package br.com.anderson_silva.Banking_system.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Data;
 
 @Data
 public class UserResponseDTO {

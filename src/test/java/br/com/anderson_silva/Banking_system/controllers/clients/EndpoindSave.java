@@ -1,6 +1,6 @@
-package br.com.anderson_silva.Banking_system.controllers;
+package br.com.anderson_silva.Banking_system.controllers.clients;
 
-import br.com.anderson_silva.Banking_system.controllers.util.EndpointUtilTest;
+import br.com.anderson_silva.Banking_system.controllers.util.EndpointUtilClientsTest;
 import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
-public class EndpoindSave extends UserControllerTest {
+
+public class EndpoindSave extends ClientControllerTest {
     String errorFullName="o campo fullName não pode ficar em branco";
     String errorEmail="o campo email não pode ficar em branco ou formato incorreto";
     String errorCpfCnpj="campo cpfCnpj inválido formato aceito ex:cpf[xxx.xxx.xxx-xx] ou cnpj[xxx.xxx.xxx-xx]";
@@ -34,7 +35,7 @@ public class EndpoindSave extends UserControllerTest {
 
         Mockito.when(this.userService.save(any())).thenReturn(userResponseDTO);
 
-        new EndpointUtilTest().expected_success201_post(mockMvc, url, userReqDTO);
+        new EndpointUtilClientsTest().expected_success201_post(mockMvc, url, userReqDTO);
 
         UserResponseDTO userResp= this.userService.save(userReqDTO);
         assertEquals(userResp.getId(),1L);
@@ -50,7 +51,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setTypeUser("client")
                 .setPassword("@12345678");
 
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorFullName));
 
     }
@@ -65,7 +66,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setTypeUser("client")
                 .setPassword("@12345678");
 
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error,errorFullName));
 
     }
@@ -80,7 +81,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setTypeUser("client")
                 .setPassword("@12345678");
 
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error,errorEmail));
 
     }
@@ -93,7 +94,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorEmail));
 
     }
@@ -106,7 +107,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("@12345678");
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorEmail));
 
     }
@@ -120,7 +121,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setTypeUser("client")
                 .setPassword("@12345678");
 
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorCpfCnpj));
 
     }
@@ -133,7 +134,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setTypeUser("client")
                 .setPassword("@12345678");
 
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorCpfCnpj));
 
     }
@@ -147,7 +148,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setTypeUser("client")
                 .setPassword("@12345678");
 
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorCpfCnpj));
 
     }
@@ -162,7 +163,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setTypeUser("")
                 .setPassword("@12345678");
 
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorTypeUser));
 
     }
@@ -178,7 +179,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setCpfCnpj("957.051.460-43")
                 .setPassword("@12345678");
 
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorTypeUser));
 
     }
@@ -192,7 +193,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setTypeUser("smdsmdsm")
                 .setPassword("@12345678");
 
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorTypeUser));
 
     }
@@ -207,7 +208,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setTypeUser("client")
                 .setPassword("");
 
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorPassword));
 
     }
@@ -219,7 +220,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setEmail("emailteste@gmail.com")
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client");
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorPassword));
 
     }
@@ -232,7 +233,7 @@ public class EndpoindSave extends UserControllerTest {
                 .setCpfCnpj("957.051.460-43")
                 .setTypeUser("client")
                 .setPassword("fdf");
-        String error=new EndpointUtilTest().expected_failure400_post(mockMvc,url,userReqDTO);
+        String error=new EndpointUtilClientsTest().expected_failure400_post(mockMvc,url,userReqDTO);
         assertTrue(StringUtils.contains(error, errorPassword));
 
     }

@@ -1,19 +1,17 @@
-package br.com.anderson_silva.Banking_system.controllers;
+package br.com.anderson_silva.Banking_system.controllers.clients;
 
-import br.com.anderson_silva.Banking_system.controllers.util.EndpointUtilTest;
+import br.com.anderson_silva.Banking_system.controllers.util.EndpointUtilBankTest;
 import br.com.anderson_silva.Banking_system.dto.request.UserRequestDTO;
 import br.com.anderson_silva.Banking_system.dto.response.UserResponseDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
-public class EndpoindUpdate extends UserControllerTest{
-    String url="/Bank/clients/{id}";
+public class EndpoindUpdate extends ClientControllerTest {
+    String url="/clients/{id}";
 
     @Test
     @WithMockUser
@@ -35,9 +33,9 @@ public class EndpoindUpdate extends UserControllerTest{
 
         UserResponseDTO userRespDTO=new UserResponseDTO(1L);
 
+      
 
-
-        ResultActions resultput = new EndpointUtilTest().expected_success200_put(mockMvc, url, userReqDTO);
+        ResultActions resultput = new EndpointUtilBankTest().expected_success200_put(mockMvc, url, userReqDTO);
         System.out.println(resultput.andReturn().getResponse().getContentAsString());
 
 

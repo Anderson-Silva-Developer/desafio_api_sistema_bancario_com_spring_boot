@@ -9,8 +9,6 @@ import br.com.anderson_silva.Banking_system.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -75,17 +73,9 @@ public class UserService {
 
     }
 
-    public boolean updateBalanceUser(User userOrigin, User userDestiny, BigDecimal amount) {
+    public boolean updateAllUsers( List<User> listUser) {
 
-        BigDecimal newAmountOrigin = userOrigin.getWallet().getBalance().subtract(amount);
-        BigDecimal newAmountDestiny = userDestiny.getWallet().getBalance().add(amount);
-        userOrigin.getWallet().setBalance(newAmountOrigin);
-        userDestiny.getWallet().setBalance(newAmountDestiny);
-        List<User> listUser = new ArrayList<>();
-        listUser.add(userOrigin);
-        listUser.add(userDestiny);
         List<User> users = this.userRepository.saveAll(listUser);
-
         if (Objects.nonNull(users)) {
             return true;
         }

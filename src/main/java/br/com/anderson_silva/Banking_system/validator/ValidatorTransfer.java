@@ -8,13 +8,15 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 
+import java.util.Objects;
+
 @NoArgsConstructor
 public class ValidatorTransfer {
 
     public TransferResponseDTO validatorRequestTransfer(Authentication auth, TransferRequestDTO transferReqTDO, User userOrigin, User userDestiny) {
 
 
-        if (userOrigin == userDestiny) {
+        if (Objects.equals(userOrigin,userDestiny)) {
             return new TransferResponseDTO()
                     .setOperation("transferência")
                     .setStatus(HttpStatus.FORBIDDEN.value())
